@@ -1,0 +1,11 @@
+@import "_bootstrap";
+@import "select2/dist/css/select2";
+
+html, body {
+    height: 100%;
+    width: 100%;
+    /* Remove any browser-default margins. */
+    margin: 0;
+}
+
+body { background:  radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(217,237,242,1) 41%, rgba(153,205,219,1) 100%); }
