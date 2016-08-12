@@ -1,7 +1,7 @@
 define("session/SessionModel", [
   "App",
-  "auth/UserModel"
-  "jquery"
+  "auth/UserModel",
+  "jquery",
   "backbone",
 ], function(App, UserModel, $, Backbone) {
 
@@ -72,7 +72,7 @@ define("session/SessionModel", [
                 dataType: 'json',
                 type: opts.method == 'logout' ? 'GET': 'POST',
                 beforeSend: function(xhr) {
-                  app.addCsrfHeader(xhr);
+                  App.addCsrfHeader(xhr);
                 },
                 data:  JSON.stringify( _.omit(opts, 'method') ),
                 success: function(res){

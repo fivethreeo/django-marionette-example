@@ -1,14 +1,10 @@
 
-var fs = require('fs');
 var path = require('path');
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
 var prompt = require('prompt');
-var async = require('async');
-var request = require('request');
 var File = require('vinyl');
 var spawn = require('cross-spawn-async');
 
@@ -20,6 +16,20 @@ function vinyl_file_gulpstream(vinylfile) {
   }
   return src
 }
+
+function getenv_updated(updates) {
+    
+    var envCopy = {};
+
+    for (var varName in process.env) {
+      envCopy[varName] = env[varName];
+    }
+    for (var varName in updates) {
+      envCopy[varName] = updates[varName];
+    }
+    return envCopy;
+}
+
 gulp.task('js', function (callback) {
 
   var requirejs = require('requirejs');
@@ -27,7 +37,7 @@ gulp.task('js', function (callback) {
   var optimize = typeof(process.env['nooptimize']) === "undefined";
 
   var config = {
-      baseUrl: '',
+      baseUrl: 'js',
       name: 'init/Init',
       include: [
         'requireLib',
@@ -41,6 +51,7 @@ gulp.task('js', function (callback) {
           'jquery': bower + 'jquery/dist/jquery',
           'underscore': bower + 'underscore/underscore',
           'backbone': bower + 'backbone/backbone',
+          'backbone.radio': bower + 'backbone.radio/build/backbone.radio',
           'marionette': bower + 'backbone.marionette/lib/backbone.marionette',
           'backbone.validation': bower + 'backbone.validation/src/backbone-validation-amd',
           'backbone.stickit': bower + 'backbone.stickit/backbone.stickit',
@@ -101,17 +112,12 @@ var python = /^win/.test(process.platform) ?
 var manage = path.join(__dirname, 'django', 'manage.py');
 
 gulp.task('connectdjango', function () {
-    var env = process.env,
-        varName,
-        envCopy = {DJANGO_DEV:1};
 
-    // Copy process.env into envCopy
-    for (varName in env) {
-      envCopy[varName] = env[varName];
-    }
-    return spawn(python, [
-       manage, 'runserver', '0.0.0.0:9000'
-    ], {stdio: 'inherit', env: envCopy});
+    var env = getenv_updated({DJANGO_DEV:1});
+
+    return spawn(python, [ manage, 'runserver', '0.0.0.0:9000'], {
+      stdio: 'inherit', env: env
+    });
 
 });
 
@@ -123,18 +129,12 @@ gulp.task('manage', function (callback) {
     type: 'string',
     required: true
   }], function(err, result) {
-    
-  var env = process.env,
-        varName,
-        envCopy = {DJANGO_DEV:1};
 
-    // Copy process.env into envCopy
-    for (varName in env) {
-      envCopy[varName] = env[varName];
-    }
-    return spawn(python,
-       [manage].concat(result['command'].split(' '))
-    , {stdio: 'inherit', env: envCopy});
+    var env = getenv_updated({DJANGO_DEV:1});
+
+    return spawn(python, [manage].concat(result['command'].split(' ')), {
+      stdio: 'inherit', env: env
+    });
     callback();
   });
 

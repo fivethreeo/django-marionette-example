@@ -1,6 +1,6 @@
 
 require([
-  "App"
+    'App',
     'session/SessionModel',
     'HeaderView',
     'IndexView',
@@ -12,24 +12,27 @@ require([
 
     // Start history when our application is ready
     App.on('start', function() {
-      App.rootView.render();
-      App.session = new SessionModel({});
       Backbone.history.start();
     });
 
     var RootView = Marionette.LayoutView.extend({
-      el: 'body',
       template: false,
       regions: {
-        header: "#header",
-        content: "#content"
+        header: '#header',
+        content: '#content'
       },
-      onBeforeShow: function() {
+      onRender: function() {
           this.showChildView('header', new HeaderView());
           this.showChildView('content', new IndexView());
       }
     });
 
-    App.rootView = new RootView();
-    App.start();
+    
+    $(document).ready(function() {
+      App.session = new SessionModel({});
+      App.rootView = new RootView({el: $('body') });
+      App.rootView.render();
+      App.start();
+    })
+    
 });

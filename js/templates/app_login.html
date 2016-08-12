@@ -12,7 +12,7 @@
                 <fieldset>
                     <div class="control-group">
                         <div class="controls">
-                            <input type="text" id="login-username-input" name="username" placeholder="Username" value="<%= user.username || '' %>"
+                            <input type="text" id="login-username-input" name="username" placeholder="Username" value="<%= (obj.user && obj.user.username) || '' %>"
                                 data-parsley-required="true" data-parsley-notblank="true">
                             <span class="help-block"></span>
                         </div>
@@ -41,7 +41,7 @@
                 <fieldset>
                     <div class="control-group">
                         <div class="controls">
-                            <input type="text" id="signup-username-input" name="username" placeholder="Username" value="<%= user.username || '' %>"
+                            <input type="text" id="signup-username-input" name="username" placeholder="Username" value="<%= (obj.user && obj.user.username)  || '' %>"
                                 data-parsley-notblank="true" required>
                             <span class="help-block"></span>
                         </div>

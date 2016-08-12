@@ -6,10 +6,10 @@
 
             <div id="header-alert" class="alert alert-success col-md-7 navbar-button" style="display:none;"></div>
 
-            <% if(logged_in){ %>
+            <% if((typeof logged_in !== 'undefined') && logged_in){ %>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= user.username %> <b class="caret"></b></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= obj.user.username %> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a id="logout-link" href="#" data-parsley-bypass>Sign Out</a></li>
                         <li><a id="remove-account-link" href="#" data-parsley-bypass>Remove Account</a></li>

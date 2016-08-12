@@ -6,6 +6,10 @@ define("App", [
     'underscore'
 ], function ($, Backbone, Marionette, _) {
 
+
+    var App = new Marionette.Application();
+    App.API = "/api/v1/"; // Base API URL (used by models & collections
+
     // Just use GET and POST to support all browsers
     Backbone.emulateHTTP = true;
 
@@ -25,7 +29,7 @@ define("App", [
       return cookieValue;
     };
     
-    addCsrfHeader = function(xhr) {
+    App.addCsrfHeader = function(xhr) {
       // Set the CSRF Token in the header for security
       var token = getCookie('csrftoken');
       if (token) xhr.setRequestHeader('X-CSRF-Token', token);
@@ -34,16 +38,12 @@ define("App", [
     var oldSync = Backbone.sync;
     Backbone.sync = function(method, model, options) {
         options.beforeSend = function(xhr){
-          addCsrfHeader(xhr);
+          App.addCsrfHeader(xhr);
         };
         return oldSync(method, model, options);
     };
 
     $.ajaxSetup({ cache: false }); // Force ajax call on all browsers
-
-    var App = new Marionette.Application();
-    App.API = "/api/v1/"; // Base API URL (used by models & collections
-
     return App;
 
 });
