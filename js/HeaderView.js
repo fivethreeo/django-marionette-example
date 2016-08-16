@@ -5,18 +5,18 @@ define('HeaderView', [
     'marionette',
     'underscore'
 ], function (template, $, Backbone, Marionette, _) {
-        //ItemView provides some default rendering logic
-        return Marionette.ItemView.extend({
-            
-            template: _.template(template),
 
-            templateHelpers: function() {
-			    return this.options;
-			},
+    return Marionette.ItemView.extend({
 
-			initialize: function(options){
-			  this.options = options || {};
-           }
+        initialize: function(options){
+            this.options = options || {};
+        },
+        
+        template: _.template(template),
 
-        });
+        templateHelpers: function() {
+            return this.options;
+        }
+
     });
+});

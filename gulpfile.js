@@ -19,7 +19,8 @@ function vinyl_file_gulpstream(vinylfile) {
 
 function getenv_updated(updates) {
     
-    var envCopy = {};
+    var env = process.env,
+      envCopy = {};
 
     for (var varName in process.env) {
       envCopy[varName] = env[varName];
@@ -64,7 +65,6 @@ gulp.task('js', function (callback) {
       }
   };
 
-
   return requirejs.optimize(config, function (res) {
 
       callback();
@@ -104,7 +104,6 @@ gulp.task('build', ['js', 'sass', 'copy'], function () {
    
 });
 
-
 var python = /^win/.test(process.platform) ? 
   path.join(__dirname, 'env', 'Scripts', 'python.exe') : 
   path.join(__dirname, 'env', 'bin', 'python');
@@ -139,6 +138,7 @@ gulp.task('manage', function (callback) {
   });
 
 });
+
 gulp.task('serve', ['connectdjango'], function () {
    
     require('opn')('http://localhost:9000');

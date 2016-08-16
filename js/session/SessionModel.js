@@ -6,12 +6,6 @@ define("session/SessionModel", [
 ], function(App, UserModel, $, Backbone) {
 
   var SessionModel = Backbone.Model.extend({
-        // Initialize with negative/empty defaults
-        // These will be overriden after the initial checkAuth
-        defaults: {
-            logged_in: false,
-            user_id: ''
-        },
 
         initialize: function(){
             // Singleton user object
@@ -19,6 +13,12 @@ define("session/SessionModel", [
             this.user = new UserModel({});
         },
 
+        // Initialize with negative/empty defaults
+        // These will be overriden after the initial checkAuth
+        defaults: {
+            logged_in: false,
+            user_id: ''
+        },
 
         url: function(){
             return App.API + "user/";
@@ -116,6 +116,7 @@ define("session/SessionModel", [
         }
 
     });
-  return SessionModel;
+
+    return SessionModel;
 
 });
