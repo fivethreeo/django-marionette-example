@@ -10,8 +10,13 @@ require([
     'underscore'
 ], function (App, SessionModel, HeaderView, IndexView, $, Backbone, Marionette, _) {
 
+
+
     // Start history when our application is ready
     App.on('start', function() {
+      App.session = new SessionModel({});
+      App.rootView = new RootView({el: $('body') });
+      App.rootView.render();
       Backbone.history.start();
     });
 
@@ -29,9 +34,6 @@ require([
 
     
     $(document).ready(function() {
-      App.session = new SessionModel({});
-      App.rootView = new RootView({el: $('body') });
-      App.rootView.render();
       App.start();
     })
     

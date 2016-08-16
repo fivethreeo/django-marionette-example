@@ -3,7 +3,10 @@ define("session/SessionModel", [
   "auth/UserModel",
   "jquery",
   "backbone",
-], function(App, UserModel, $, Backbone) {
+  "radio"
+], function(App, UserModel, $, Backbone, Radio) {
+
+  var sessionCh = Radio.channel('session');
 
   var SessionModel = Backbone.Model.extend({
 
@@ -11,6 +14,11 @@ define("session/SessionModel", [
             // Singleton user object
             // Access or listen on this throughout any module with app.session.user
             this.user = new UserModel({});
+            sessionCh.reply('login', this.login);
+            sessionCh.reply('logout', this.logout);
+            sessionCh.reply('signup', this.signup);
+            sessionCh.reply('removeAccount', this.removeAccount);
+            sessionCh.reply('checkAuth', this.checkAuth);
         },
 
         // Initialize with negative/empty defaults
@@ -35,24 +43,26 @@ define("session/SessionModel", [
          * The API will parse client cookies using its secret token
          * and return a user object if authenticated
          */
-        checkAuth: function(callback, args) {
+        checkAuth: function(args) {
             var self = this;
             this.fetch({ 
-                success: function(mod, res){
-                    if(!res.error && res.user){
-                        self.updateSessionUser(res.user);
+                success: function(mod, response){
+                    if(!response.error && response.user){
+                        self.updateSessionUser(response.user);
                         self.set({ logged_in : true });
-                        if('success' in callback) callback.success(mod, res);    
+                        sessionCh.trigger('checkAuth:success', self, response);
                     } else {
+                        self.updateSessionUser({});
                         self.set({ logged_in : false });
-                        if('error' in callback) callback.error(mod, res);    
+                        sessionCh.trigger('checkAuth:error', self, response);
                     }
-                }, error:function(mod, res){
+                }, error:function(mod, response){
+                    self.updateSessionUser({});
                     self.set({ logged_in : false });
-                    if('error' in callback) callback.error(mod, res);    
+                    sessionCh.trigger('checkAuth:error', self, response);  
                 }
             }).always( function(){
-                if('complete' in callback) callback.complete();
+                sessionCh.trigger('checkAuth:complete', self, response);  
             });
         },
 
@@ -75,44 +85,58 @@ define("session/SessionModel", [
                   App.addCsrfHeader(xhr);
                 },
                 data:  JSON.stringify( _.omit(opts, 'method') ),
-                success: function(res){
+                success: function(response){
 
-                    if( !res.error ){
+                        var status = !response.error ? 'success' : 'error';
+                        var event = opts.method + ':' + status;
+
                         if(_.indexOf(['login', 'signup'], opts.method) !== -1){
                             self.updateSessionUser( res.user || {} );
                             self.set({ user_id: res.user.id, logged_in: true });
-                        } else {
-                            self.set({ logged_in: false });
                         }
-
-                        if(callback && 'success' in callback) callback.success(res);
-                    } else {
-                        if(callback && 'error' in callback) callback.error(res);
-                    }
+                        if(_.indexOf(['logout', 'removeAccount'], opts.method) !== -1){
+                            self.updateSessionUser( {} );
+                            self.set({ user_id: '', logged_in: false });
+                        }
+                        if (opts.method=='login'){
+                            sessionCh.trigger(event, self, response);
+                        }
+                        else if (opts.method=='signup'){
+                            sessionCh.trigger(event, self, response);
+                            if (status == 'success') sessionCh.trigger('login:success', self, response);
+                        }
+                        else if (opts.method=='logout'){
+                            sessionCh.trigger(event, self, response);
+                        }
+                        else if (opts.method=='removeAccount'){
+                            sessionCh.trigger(event, self, response);
+                            if (status == 'success') sessionCh.trigger('logout:success', self, response);
+                        }
                 },
-                error: function(mod, res){
-                    if(callback && 'error' in callback) callback.error(res);
+                error: function(mod, response){
+                    var event = opts.method + ':' + 'error';
+                    sessionCh.trigger(event, self, response);
                 }
             }).always( function(){
-                if(callback && 'complete' in callback) callback.complete(res);
+                sessionCh('postAuth:complete', opts);
             });
         },
 
 
-        login: function(opts, callback, args){
-            this.postAuth(_.extend(opts, { method: 'login' }), callback);
+        login: function(opts){
+            this.postAuth(_.extend({ method: 'login' }));
         },
 
-        logout: function(opts, callback, args){
-            this.postAuth(_.extend(opts, { method: 'logout' }), callback);
+        logout: function(opts){
+            this.postAuth(_.extend(opts, { method: 'logout' }));
         },
 
-        signup: function(opts, callback, args){
-            this.postAuth(_.extend(opts, { method: 'signup' }), callback);
+        signup: function(opts){
+            this.postAuth(_.extend(opts, { method: 'signup' }));
         },
 
-        removeAccount: function(opts, callback, args){
-            this.postAuth(_.extend(opts, { method: 'remove_account' }), callback);
+        removeAccount: function(opts){
+            this.postAuth(_.extend(opts, { method: 'remove_account' }));
         }
 
     });

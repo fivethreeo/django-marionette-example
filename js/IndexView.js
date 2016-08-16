@@ -8,10 +8,16 @@ define('IndexView', [
     'parsleyjs'
 ], function(App, template, $, Backbone, Marionette, _) {
 
+    var sessionCh = Radio.channel('session');
+
     return Marionette.ItemView.extend({
 
         initialize: function(options) {
             this.options = options || {};
+            this.listenTo(sessionCh, 'login:success', this.onLoginSuccess);
+            this.listenTo(sessionCh, 'login:error', this.onLoginError);
+            this.listenTo(sessionCh, 'signup:success', this.onSignupSuccess);
+            this.listenTo(sessionCh, 'signup:error', this.onSignupError);
         },
 
         template: _.template(template),
@@ -66,18 +72,32 @@ define('IndexView', [
             if (evt) evt.preventDefault();
 
             if (this.ui.loginform.parsley().validate()) {
-                App.session.login({
+                sessionCh.request('login'. {
                     username: this.ui.username.val(),
                     password: this.ui.password.val()
-                }, {
-                    success: function(mod, res) {
-                        console.log("SUCCESS", mod, res);
+                });
+            } else {
+                // Invalid clientside validations thru parsley
+                //if(DEBUG) console.log("Did not pass clientside validation");
 
-                    },
-                    error: function(err) {
-                        console.log("ERROR", err);
-                        //app.showAlert('Bummer dude!', err.reason, 'alert-danger');
-                    }
+            }
+        },
+
+        onLoginSuccess: function(evt) {
+           console.log("SUCCESS", mod, res);
+        },
+
+        onLoginError: function(evt) {
+           console.log("Error", mod, res);
+        },
+
+        onSignupAttempt: function(evt) {
+            if (evt) evt.preventDefault();
+            if (this.ui.signupform.parsley().validate()) {
+                sessionCh.request('signup', {
+                    username: this.ui.signupusername.val(),
+                    password: this.ui.signuppassword.val(),
+                    name: this.ui.signupname.val()
                 });
             } else {
                 // Invalid clientside validations thru parsley
@@ -87,29 +107,17 @@ define('IndexView', [
         },
 
 
-        onSignupAttempt: function(evt) {
-            if (evt) evt.preventDefault();
-            if (this.ui.signupform.parsley().validate()) {
-                App.session.signup({
-                    username: this.ui.signupusername.val(),
-                    password: this.ui.signuppassword.val(),
-                    name: this.ui.signupname.val()
-                }, {
-                    success: function(mod, res) {
-                        // if(DEBUG) console.log("SUCCESS", mod, res);
+        onSignupSuccess: function(evt) {
+            // if(DEBUG) console.log("SUCCESS", mod, res);
 
-                    },
-                    error: function(err) {
-                        //      if(DEBUG) console.log("ERROR", err);
-                        //  app.showAlert('Uh oh!', err.error, 'alert-danger'); 
-                    }
-                });
-            } else {
-                // Invalid clientside validations thru parsley
-                //if(DEBUG) console.log("Did not pass clientside validation");
+        },
 
-            }
+        onSignupError: function(evt) {
+            // if(DEBUG) console.log("SUCCESS", mod, res);
+
         }
+
+
 
     });
 });
