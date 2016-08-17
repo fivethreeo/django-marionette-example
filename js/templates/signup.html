@@ -1,0 +1,31 @@
+            <h1>Signup</h1>
+            <div class="height:50px;">
+                <ul id="signup-errors" class="parsley-error-list"></ul>
+            </div>
+            <form id="signup-form" class="form" data-parsley-validate>
+                <fieldset>
+                    <div class="control-group">
+                        <div class="controls">
+                            <input type="text" id="signup-username" name="username" placeholder="Username" value="<%= (obj.user && obj.user.username)  || '' %>"
+                                data-parsley-notblank="true" required>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <input class="input-medium" type="password" id="signup-password" placeholder="Password" name="user_password" 
+                                value="" data-parsley-required="true" data-parsley-notblank="true" data-parsley-rangelength="[5,25]">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="control-group mb20">
+                        <div class="controls">
+                            <input class="input-medium" type="password" id="signup-password-confirm" placeholder="Confirm Password" name="user_password" 
+                                value="" data-parsley-required="true" data-parsley-notblank="true" data-parsley-rangelength="[5,25]" data-parsley-equalto="#signup-password">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <a href="#" id="signup-btn" class="btn btn-primary btn-lg" data-parsley-bypass>Signup</a>
+                    
+                </fieldset>
+            </form>

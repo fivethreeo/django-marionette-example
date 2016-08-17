@@ -3,7 +3,7 @@ define("session/SessionModel", [
   "auth/UserModel",
   "jquery",
   "backbone",
-  "radio"
+  "backbone.radio"
 ], function(App, UserModel, $, Backbone, Radio) {
 
   var sessionCh = Radio.channel('session');
@@ -12,7 +12,6 @@ define("session/SessionModel", [
 
         initialize: function(){
             // Singleton user object
-            // Access or listen on this throughout any module with app.session.user
             this.user = new UserModel({});
             sessionCh.reply('login', this.login);
             sessionCh.reply('logout', this.logout);
@@ -61,7 +60,7 @@ define("session/SessionModel", [
                     self.set({ logged_in : false });
                     sessionCh.trigger('checkAuth:error', self, response);  
                 }
-            }).always( function(){
+            }).always( function(response){
                 sessionCh.trigger('checkAuth:complete', self, response);  
             });
         },
@@ -74,7 +73,6 @@ define("session/SessionModel", [
          */
         postAuth: function(opts, callback, args){
             var self = this;
-            var postData = _.omit(opts, 'method');
             console.log(postData);
             $.ajax({
                 url: this.url()+ opts.method + '/' ,
@@ -117,8 +115,8 @@ define("session/SessionModel", [
                     var event = opts.method + ':' + 'error';
                     sessionCh.trigger(event, self, response);
                 }
-            }).always( function(){
-                sessionCh('postAuth:complete', opts);
+            }).always( function(response){
+                sessionCh('postAuth:complete', self, response);
             });
         },
 

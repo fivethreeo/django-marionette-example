@@ -1,5 +1,5 @@
 define('HeaderView', [
-    'text!templates/app_header.html',
+    'text!templates/header.html',
     'jquery',
     'backbone',
     'marionette',

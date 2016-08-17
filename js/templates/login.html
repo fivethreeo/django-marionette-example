@@ -1,0 +1,26 @@
+
+            <h1>Login</h1>
+            <div class="height:50px;">
+                <ul id="login-errors" class="parsley-error-list"></ul>
+            </div>
+
+            <form id="login-form" class="form" data-parsley-validate="parsley">
+                <fieldset>
+                    <div class="control-group">
+                        <div class="controls">
+                            <input type="text" id="login-username" name="username" placeholder="Username" value="<%= (obj.user && obj.user.username) || '' %>"
+                                data-parsley-required="true" data-parsley-notblank="true">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="control-group mb20">
+                        <div class="controls">
+                            <input class="input-medium" type="password" id="login-password" placeholder="Password" name="user_password" 
+                                value="" data-parsley-required="true" data-parsley-notblank="true" data-parsley-rangelength="[5,25]">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <a href="#" id="login-btn" class="btn btn-primary btn-lg" data-parsley-bypass>Login</a>
+
+                </fieldset>
+            </form>
