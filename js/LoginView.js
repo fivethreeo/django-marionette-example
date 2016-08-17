@@ -63,7 +63,7 @@ define('LoginView', [
         },
 
         onLoginSuccess: function(evt) {
-           console.log("SUCCESS", mod, res);
+           App.rootView.showChildView('content', )
         },
 
         onLoginError: function(evt) {

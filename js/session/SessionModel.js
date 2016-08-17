@@ -13,6 +13,7 @@ define("session/SessionModel", [
         initialize: function(){
             // Singleton user object
             this.user = new UserModel({});
+            _.bindAll(this, 'login', 'logout', 'signup', 'removeAccount', 'checkAuth');
             sessionCh.reply('login', this.login);
             sessionCh.reply('logout', this.logout);
             sessionCh.reply('signup', this.signup);
@@ -46,8 +47,8 @@ define("session/SessionModel", [
             var self = this;
             this.fetch({ 
                 success: function(mod, response){
-                    if(!response.error && response.user){
-                        self.updateSessionUser(response.user);
+                    if(!response.error && response.objects){
+                        self.updateSessionUser(response.objects[0]);
                         self.set({ logged_in : true });
                         sessionCh.trigger('checkAuth:success', self, response);
                     } else {
