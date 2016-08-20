@@ -1,11 +1,12 @@
 define('HeaderView', [
     'text!templates/header.html',
     'jquery',
+    'bootstrap',
     'backbone',
     'backbone.radio',
     'marionette',
     'underscore'
-], function (template, $, Backbone, Radio, Marionette, _) {
+], function (template, $, Bootstrap, Backbone, Radio, Marionette, _) {
 
 
     var sessionCh = Radio.channel('session');
@@ -25,6 +26,10 @@ define('HeaderView', [
             var context = obj.toJSON();
             context.user = obj.user.toJSON();
             return context
+        },
+
+        onRender : function() {
+
         }
 
     });
