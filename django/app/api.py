@@ -92,7 +92,7 @@ class UserResource(ModelResource):
         # Because this can be updated nested under the UserProfile, it needed
         # 'put'. No idea why, since patch is supposed to be able to handle
         # partial updates.
-        allowed_methods = ['get', 'patch', 'put', ]
+        allowed_methods = ['get', 'patch', 'put', 'post']
         always_return_data = True
         queryset = User.objects.all().select_related("api_key")
         excludes = ['is_active', 'is_staff', 'is_superuser', 'date_joined',
@@ -205,7 +205,7 @@ class UserProfileResource(ModelResource):
         authorization = Authorization()
         always_return_data = True
         allowed_methods = ['get', 'patch', ]
-        detail_allowed_methods = ['get', 'patch', 'put']
+        detail_allowed_methods = ['get', 'patch', 'put', 'post']
         queryset = UserProfile.objects.all()
         resource_name = 'user/profile'
 

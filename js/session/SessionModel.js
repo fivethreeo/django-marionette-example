@@ -127,19 +127,19 @@ define("session/SessionModel", [
 
 
         login: function(opts, context){
-            this.postAuth(_.extend(opts, { method: 'login', context:context }));
+            this.postAuth(_.extend(opts||{}, { method: 'login', context:context }));
         },
 
         logout: function(opts, context){
-            this.postAuth(_.extend(opts, { method: 'logout', context:context } ));
+            this.postAuth(_.extend(opts||{}, { method: 'logout', context:context } ));
         },
 
         signup: function(opts, context){
-            this.postAuth(_.extend(opts, { method: 'signup', context:context  }));
+            this.postAuth(_.extend(opts||{}, { method: 'signup', context:context  }));
         },
 
         removeAccount: function(opts, context){
-            this.postAuth(_.extend(opts, { method: 'remove_account', context:context }));
+            this.postAuth(_.extend(opts||{}, { method: 'remove_account', context:context }));
         }
 
     });

@@ -1,4 +1,5 @@
 define('HeaderView', [
+    'App',
     'text!templates/header.html',
     'jquery',
     'bootstrap',
@@ -6,7 +7,7 @@ define('HeaderView', [
     'backbone.radio',
     'marionette',
     'underscore'
-], function (template, $, Bootstrap, Backbone, Radio, Marionette, _) {
+], function (App, template, $, Bootstrap, Backbone, Radio, Marionette, _) {
 
 
     var sessionCh = Radio.channel('session');
@@ -17,8 +18,24 @@ define('HeaderView', [
             this.options = options || {};
             this.listenTo(sessionCh, 'login:success', this.render);
             this.listenTo(sessionCh, 'checkAuth:success', this.render);
+            this.listenTo(sessionCh, 'logout:success', this.logged_out);
         },
         
+        events: {
+            'click #logout-link': 'logout'
+        },
+
+        logout: function(evt) {
+            evt.preventDefault();
+            sessionCh.request('logout');
+        },
+
+        logged_out: function() {
+            this.render();
+            App.router.controller.index();
+            App.router.navigate('')
+        },
+
         template: _.template(template),
 
         templateHelpers: function() {
@@ -26,10 +43,6 @@ define('HeaderView', [
             var context = obj.toJSON();
             context.user = obj.user.toJSON();
             return context
-        },
-
-        onRender : function() {
-
         }
 
     });

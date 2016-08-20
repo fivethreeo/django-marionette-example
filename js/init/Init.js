@@ -5,12 +5,13 @@ require([
     'HeaderView',
     'IndexView',
     'LoginView',
+    'SignupView',
     'jquery',
     'backbone',
     'backbone.radio',
     'marionette',
     'underscore'
-], function (App, SessionModel, HeaderView, IndexView, LoginView, $, Backbone, Radio, Marionette, _) {
+], function (App, SessionModel, HeaderView, IndexView, LoginView, SignupView, $, Backbone, Radio, Marionette, _) {
 
     var sessionCh = Radio.channel('session');
 
@@ -32,31 +33,28 @@ require([
       },
       index: function() {
         sessionCh.request('checkAuth', {nextView:IndexView});
+      },
+      signup: function() {
+          App.rootView.showChildView('content', new SignupView());
       }
     });
 
 
     var Router = Marionette.AppRouter.extend({
       appRoutes: {
-        '': 'index'
+        '': 'index',
+        'signup': 'signup'
       },
 
-      controller: new Controller(),
-
-      onRoute: function(name, path, args) {
-        if (name !== 'index') {
-            this.controller.authView = null;
-        }
-      }
-
+      controller: new Controller()
     });
 
     App.on('start', function() {
       App.session = new SessionModel({}); // Singleton session model
       App.rootView = new RootView({el: $('body') });
       App.rootView.render();
-      new Router();
-      Backbone.history.start(); // Start history when our application is ready
+      App.router = new Router();
+      Backbone.history.start({root:'/'}); // Start history when our application is ready
     });
 
     var RootView = Marionette.LayoutView.extend({
