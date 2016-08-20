@@ -13,12 +13,13 @@ define("session/SessionModel", [
         initialize: function(){
             // Singleton user object
             this.user = new UserModel({});
-            _.bindAll(this, 'login', 'logout', 'signup', 'removeAccount', 'checkAuth');
+            _.bindAll(this, 'login', 'logout', 'signup', 'removeAccount', 'checkAuth', 'getObject');
             sessionCh.reply('login', this.login);
             sessionCh.reply('logout', this.logout);
             sessionCh.reply('signup', this.signup);
             sessionCh.reply('removeAccount', this.removeAccount);
             sessionCh.reply('checkAuth', this.checkAuth);
+            sessionCh.reply('object', this.getObject);
         },
 
         // Initialize with negative/empty defaults
@@ -30,6 +31,10 @@ define("session/SessionModel", [
 
         url: function(){
             return App.API + "user/";
+        },
+
+        getObject : function() {
+            return this;
         },
 
         // Fxn to update user attributes after recieving API response
