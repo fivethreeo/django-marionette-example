@@ -15,7 +15,6 @@ define('LoginView', [
 
         initialize: function(options) {
             this.options = options || {};
-            this.listenTo(sessionCh, 'login:success', this.onLoginSuccess);
             this.listenTo(sessionCh, 'login:error', this.onLoginError);
         },
 
@@ -56,14 +55,10 @@ define('LoginView', [
                 sessionCh.request('login', {
                     username: this.ui.login_username.val(),
                     password: this.ui.login_password.val()
-                });
+                }, this.options);
             } else {
                 // Invalid clientside validations thru parsley
             }
-        },
-
-        onLoginSuccess: function(evt) {
-           App.rootView.showChildView('content', )
         },
 
         onLoginError: function(evt) {

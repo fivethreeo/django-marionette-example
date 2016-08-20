@@ -43,26 +43,26 @@ define("session/SessionModel", [
          * The API will parse client cookies using its secret token
          * and return a user object if authenticated
          */
-        checkAuth: function(args) {
+        checkAuth: function(context) {
             var self = this;
             this.fetch({ 
                 success: function(mod, response){
                     if(!response.error && response.objects){
                         self.updateSessionUser(response.objects[0]);
                         self.set({ logged_in : true });
-                        sessionCh.trigger('checkAuth:success', self, response);
+                        sessionCh.trigger('checkAuth:success', self, response, context);
                     } else {
                         self.updateSessionUser({});
                         self.set({ logged_in : false });
-                        sessionCh.trigger('checkAuth:error', self, response);
+                        sessionCh.trigger('checkAuth:error', self, response, context);
                     }
                 }, error:function(mod, response){
                     self.updateSessionUser({});
                     self.set({ logged_in : false });
-                    sessionCh.trigger('checkAuth:error', self, response);  
+                    sessionCh.trigger('checkAuth:error', self, response, context);  
                 }
             }).always( function(response){
-                sessionCh.trigger('checkAuth:complete', self, response);  
+                sessionCh.trigger('checkAuth:complete', self, response, context);  
             });
         },
 
@@ -72,9 +72,8 @@ define("session/SessionModel", [
          * This takes care of the CSRF header for security, as well as
          * updating the user and session after receiving an API response
          */
-        postAuth: function(opts, callback, args){
+        postAuth: function(opts){
             var self = this;
-            console.log(postData);
             $.ajax({
                 url: this.url()+ opts.method + '/' ,
                 contentType: 'application/json',
@@ -83,59 +82,59 @@ define("session/SessionModel", [
                 beforeSend: function(xhr) {
                   App.addCsrfHeader(xhr);
                 },
-                data:  JSON.stringify( _.omit(opts, 'method') ),
+                data:  JSON.stringify( _.omit(opts, 'method', 'context') ),
                 success: function(response){
 
                         var status = !response.error ? 'success' : 'error';
                         var event = opts.method + ':' + status;
 
                         if(_.indexOf(['login', 'signup'], opts.method) !== -1){
-                            self.updateSessionUser( res.user || {} );
-                            self.set({ user_id: res.user.id, logged_in: true });
+                            self.updateSessionUser( response.user || {} );
+                            self.set({ user_id: response.user.id, logged_in: true });
                         }
                         if(_.indexOf(['logout', 'removeAccount'], opts.method) !== -1){
                             self.updateSessionUser( {} );
                             self.set({ user_id: '', logged_in: false });
                         }
                         if (opts.method=='login'){
-                            sessionCh.trigger(event, self, response);
+                            sessionCh.trigger(event, self, response, opts.context);
                         }
                         else if (opts.method=='signup'){
                             sessionCh.trigger(event, self, response);
-                            if (status == 'success') sessionCh.trigger('login:success', self, response);
+                            if (status == 'success') sessionCh.trigger('login:success', self, response, opts.context);
                         }
                         else if (opts.method=='logout'){
-                            sessionCh.trigger(event, self, response);
+                            sessionCh.trigger(event, self, response, opts.context);
                         }
                         else if (opts.method=='removeAccount'){
                             sessionCh.trigger(event, self, response);
-                            if (status == 'success') sessionCh.trigger('logout:success', self, response);
+                            if (status == 'success') sessionCh.trigger('logout:success', self, response, opts.context);
                         }
                 },
                 error: function(mod, response){
                     var event = opts.method + ':' + 'error';
-                    sessionCh.trigger(event, self, response);
+                    sessionCh.trigger(event, self, response, opts.context);
                 }
             }).always( function(response){
-                sessionCh('postAuth:complete', self, response);
+                sessionCh.trigger('postAuth:complete', self, response, opts.context);
             });
         },
 
 
-        login: function(opts){
-            this.postAuth(_.extend({ method: 'login' }));
+        login: function(opts, context){
+            this.postAuth(_.extend(opts, { method: 'login', context:context }));
         },
 
-        logout: function(opts){
-            this.postAuth(_.extend(opts, { method: 'logout' }));
+        logout: function(opts, context){
+            this.postAuth(_.extend(opts, { method: 'logout', context:context } ));
         },
 
-        signup: function(opts){
-            this.postAuth(_.extend(opts, { method: 'signup' }));
+        signup: function(opts, context){
+            this.postAuth(_.extend(opts, { method: 'signup', context:context  }));
         },
 
-        removeAccount: function(opts){
-            this.postAuth(_.extend(opts, { method: 'remove_account' }));
+        removeAccount: function(opts, context){
+            this.postAuth(_.extend(opts, { method: 'remove_account', context:context }));
         }
 
     });
