@@ -80,7 +80,7 @@ define("session/SessionModel", [
         postAuth: function(opts){
             var self = this;
             $.ajax({
-                url: this.url()+ opts.method + '/' ,
+                url: (opts.method == 'signup' ? App.API + 'signup' : this.url()+ opts.method) + '/' ,
                 contentType: 'application/json',
                 dataType: 'json',
                 type: opts.method == 'logout' ? 'GET': 'POST',

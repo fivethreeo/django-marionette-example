@@ -5,8 +5,7 @@ define('SignupView', [
     'backbone',
     'marionette',
     'underscore',
-    'backbone.radio',
-    'parsleyjs'
+    'backbone.radio'
 ], function(App, template, $, Backbone, Marionette, _, Radio) {
 
     var sessionCh = Radio.channel('session');
@@ -20,6 +19,7 @@ define('SignupView', [
         },
 
         template: _.template(template),
+        className: 'row',
 
         templateHelpers: function() {
             return this.options;
@@ -27,9 +27,9 @@ define('SignupView', [
         ui : {
             'signup_form': '#signup-form',
             'signup_username': '#signup-username',
-            'signup_name': '#signup-name',
             'signup_password': '#signup-password',
-            'signup_passwordconfirm': '#signup-password-confirm'
+            'signup_passwordconfirm': '#signup-password-confirm',
+            'signup_email': '#signup-email'
         },
         events: {
             'click #signup-btn': 'onSignupAttempt',
@@ -51,12 +51,14 @@ define('SignupView', [
 
         onSignupAttempt: function(evt) {
             if (evt) evt.preventDefault();
-            if (this.ui.signup_form.parsley().validate()) {
+            if (this.ui.signup_form.parsley(App.ParsleyConfig).validate()) {
                 sessionCh.request('signup', {
-                    username: this.ui.signup_username.val(),
-                    password: this.ui.signup_password.val(),
-                    name: this.ui.signup_name.val()
-                });
+                    user: {
+                        username: this.ui.signup_username.val(),
+                        raw_password: this.ui.signup_password.val(),
+                        email: this.ui.signup_email.val()
+                    }
+                }, this.options);
             } else {
                 // Invalid clientside validations thru parsley
             }

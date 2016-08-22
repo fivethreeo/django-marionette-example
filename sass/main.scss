@@ -9,3 +9,10 @@ html, body {
 }
 
 body { padding-top: 50px; background:  radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(217,237,242,1) 41%, rgba(153,205,219,1) 100%); }
+
+.center-block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+}

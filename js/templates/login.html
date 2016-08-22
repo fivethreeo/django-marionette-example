@@ -1,26 +1,26 @@
 
-            <h1>Login</h1>
-            <div class="height:50px;">
-                <ul id="login-errors" class="parsley-error-list"></ul>
+<div class="col-md-4 center-block">
+    <h1>Login</h1>
+    <div class="height:50px;">
+        <ul id="login-errors" class="parsley-error-list"></ul>
+    </div>
+    <form id="login-form" class="form text-left" data-parsley-validate="parsley">
+        <div class="main-login-form">
+            <div class="login-group">
+                <div class="form-group">
+                    <label for="login-username" class="sr-only">Username</label>
+                    <input type="text" class="form-control" id="login-username" name="username" placeholder="Username" data-parsley-required="true" data-parsley-notblank="true">
+                </div>
+                <div class="form-group">
+                    <label for="login-password" class="sr-only">Password</label>
+                    <input type="password" class="form-control" id="login-password" name="password" placeholder="Password" data-parsley-required="true" data-parsley-notblank="true" data-parsley-rangelength="[5,25]">
+                </div>
             </div>
-
-            <form id="login-form" class="form" data-parsley-validate="parsley">
-                <fieldset>
-                    <div class="control-group">
-                        <div class="controls">
-                            <input type="text" id="login-username" name="username" placeholder="Username"
-                                data-parsley-required="true" data-parsley-notblank="true">
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                    <div class="control-group mb20">
-                        <div class="controls">
-                            <input class="input-medium" type="password" id="login-password" placeholder="Password" name="user_password" 
-                                value="" data-parsley-required="true" data-parsley-notblank="true" data-parsley-rangelength="[5,25]">
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                    <a href="#" id="login-btn" class="btn btn-primary btn-lg" data-parsley-bypass>Login</a>
-
-                </fieldset>
-            </form>
+            <button type="button" id="login-btn" class="btn btn-lg btn-primary btn-block" data-parsley-bypass>Sign in</button>
+        </div>
+        <div class="etc-login-form">
+            <!--<p>forgot your password? <a href="#">click here</a></p>-->
+            <p>new user? <a href="#" id="signup">create new account</a></p>
+        </div>
+    </form>
+</div>   

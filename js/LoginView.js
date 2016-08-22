@@ -1,13 +1,13 @@
 define('LoginView', [
     'App',
+    'SignupView',
     'text!templates/login.html',
     'jquery',
     'backbone',
     'marionette',
     'underscore',
-    'backbone.radio',
-    'parsleyjs'
-], function(App, template, $, Backbone, Marionette, _, Radio) {
+    'backbone.radio'
+], function(App, SignupView, template, $, Backbone, Marionette, _, Radio) {
 
     var sessionCh = Radio.channel('session');
 
@@ -19,6 +19,7 @@ define('LoginView', [
         },
 
         template: _.template(template),
+        className: 'row',
 
         templateHelpers: function() {
             return this.options;
@@ -32,7 +33,8 @@ define('LoginView', [
 
         events: {
             'click #login-btn': 'onLoginAttempt',
-            'keyup #login-password': 'onPasswordKeyup'
+            'keyup #login-password': 'onPasswordKeyup',
+            'click #signup': 'onSignupClick'
         },
 
         // Allow enter press to trigger login
@@ -51,7 +53,7 @@ define('LoginView', [
         onLoginAttempt: function(evt) {
             if (evt) evt.preventDefault();
 
-            if (this.ui.login_form.parsley().validate()) {
+            if (this.ui.login_form.parsley(App.ParsleyConfig).validate()) {
                 sessionCh.request('login', {
                     username: this.ui.login_username.val(),
                     password: this.ui.login_password.val()
@@ -59,6 +61,12 @@ define('LoginView', [
             } else {
                 // Invalid clientside validations thru parsley
             }
+        },
+
+        onSignupClick: function(evt) {
+            if (evt) evt.preventDefault();
+            App.rootView.showChildView('content', new SignupView());
+
         },
 
         onLoginError: function(evt) {

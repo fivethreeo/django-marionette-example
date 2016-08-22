@@ -5,8 +5,7 @@ define('IndexView', [
     'backbone',
     'marionette',
     'underscore',
-    'backbone.radio',
-    'parsleyjs'
+    'backbone.radio'
 ], function(App, template, $, Backbone, Marionette, _, Radio) {
 
     var sessionCh = Radio.channel('session');

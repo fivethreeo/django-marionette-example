@@ -18,6 +18,7 @@ require([
     var Controller = Marionette.Object.extend({
       initialize: function(options){
         this.listenTo(sessionCh, 'login:success', this.onAuthSuccess);
+        this.listenTo(sessionCh, 'signup:success', this.onAuthSuccess);
         this.listenTo(sessionCh, 'checkAuth:success', this.onAuthSuccess);
         this.listenTo(sessionCh, 'checkAuth:error', this.onAuthError);
       },
@@ -72,5 +73,4 @@ require([
     $(document).ready(function() {
       App.start();
     })
-    
 });

@@ -19,7 +19,7 @@ from .exceptions import CustomBadRequest
 
 
 class CreateUserResource(ModelResource):
-    user = fields.ForeignKey('core.api.UserResource', 'user', full=True)
+    user = fields.ForeignKey('app.api.UserResource', 'user', full=True)
 
     class Meta:
         allowed_methods = ['post']
@@ -27,7 +27,7 @@ class CreateUserResource(ModelResource):
         authentication = Authentication()
         authorization = Authorization()
         queryset = UserProfile.objects.all()
-        resource_name = 'user/signup'
+        resource_name = 'signup'
         always_return_data = True
 
     def hydrate(self, bundle):
@@ -120,7 +120,7 @@ class UserResource(ModelResource):
             # https://github.com/toastdriven/django-tastypie/issues/603
             # "Cannot resolve keyword 'raw_password' into field." won't occur
 
-            raw_password = bundle.data.pop["raw_password"]
+            raw_password = bundle.data.pop("raw_password")
 
             # Validate password
             if not validate_password(raw_password):

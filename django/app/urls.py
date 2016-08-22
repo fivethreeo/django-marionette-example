@@ -7,8 +7,8 @@ from tastypie.api import Api
 from app.api import UserResource, CreateUserResource, UserProfileResource
 
 v1_api = Api(api_name='v1')
-v1_api.register(UserResource())
 v1_api.register(CreateUserResource())
+v1_api.register(UserResource())
 v1_api.register(UserProfileResource())
 
 from django.contrib import admin

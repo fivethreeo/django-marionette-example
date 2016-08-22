@@ -3,8 +3,9 @@ define("App", [
     'jquery',
     'backbone',
     'marionette',
-    'underscore'
-], function ($, Backbone, Marionette, _) {
+    'underscore',
+    'parsleyjs'
+], function ($, Backbone, Marionette, _, parsley) {
 
 
     var App = new Marionette.Application();
@@ -44,6 +45,19 @@ define("App", [
     };
 
     $.ajaxSetup({ cache: false }); // Force ajax call on all browsers
+
+App.ParsleyConfig  = {
+    errorClass: 'has-error',
+    successClass: 'has-success',
+    classHandler: function(ParsleyField) {
+        return ParsleyField.$element.parents('.form-group');
+    },
+    errorsContainer: function(ParsleyField) {
+        return ParsleyField.$element.parents('.form-group');
+    },
+    errorsWrapper: '<span class="help-block">',
+    errorTemplate: '<div></div>'
+};  
     return App;
 
 });
