@@ -53,12 +53,10 @@ define('SignupView', [
             if (evt) evt.preventDefault();
             if (this.ui.form.parsley(App.ParsleyConfig).validate()) {
                 sessionCh.request('signup', {
-                    user: {
-                        username: this.ui.username.val(),
-                        password1: this.ui.password1.val(),
-                        password2: this.ui.password1.val(),
-                        email: this.ui.email.val()
-                    }
+                    username: this.ui.username.val(),
+                    password1: this.ui.password1.val(),
+                    password2: this.ui.password1.val(),
+                    email: this.ui.email.val()
                 }, this.options);
             } else {
                 // Invalid clientside validations thru parsley

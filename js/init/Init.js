@@ -17,7 +17,6 @@ require([
 
     var Controller = Marionette.Object.extend({
       initialize: function(options){
-        this.listenTo(sessionCh, 'signup:success', this.onAuthSuccess);
         this.listenTo(sessionCh, 'checkAuth:success', this.onAuthSuccess);
         this.listenTo(sessionCh, 'checkAuth:error', this.onAuthError);
       },

@@ -113,10 +113,11 @@ define("session/SessionModel", [
                         }
                         if (opts.method=='login'){
                             sessionCh.trigger(event, self, response, opts.context);
-                            sessionCh.request('checkAuth', opts.context);
+                            if (status == 'success') sessionCh.request('checkAuth', opts.context);
                         }
                         else if (opts.method=='signup'){
                             sessionCh.trigger(event, self, response);
+                            if (status == 'success') sessionCh.request('checkAuth', opts.context);
                         }
                         else if (opts.method=='logout'){
                             sessionCh.trigger(event, self, response, opts.context);
