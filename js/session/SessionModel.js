@@ -20,6 +20,14 @@ define("session/SessionModel", [
             sessionCh.reply('removeAccount', this.removeAccount);
             sessionCh.reply('checkAuth', this.checkAuth);
             sessionCh.reply('object', this.getObject);
+
+            this.method_map = {
+                signup: ['POST', 'registration'],
+                login: ['POST', 'login'],
+                logout: ['POST', 'logout'],
+                checkAuth:  ['GET', 'user'],
+                removeAccount: ['DELETE', 'user']
+            }
         },
 
         // Initialize with negative/empty defaults
@@ -30,7 +38,7 @@ define("session/SessionModel", [
         },
 
         url: function(){
-            return App.API + "user/";
+            return App.AUTH_API + "user/";
         },
 
         getObject : function() {
@@ -52,8 +60,8 @@ define("session/SessionModel", [
             var self = this;
             this.fetch({ 
                 success: function(mod, response){
-                    if(!response.error && response.objects){
-                        self.updateSessionUser(response.objects[0]);
+                    if(!response.error){
+                        self.updateSessionUser(response);
                         self.set({ logged_in : true });
                         sessionCh.trigger('checkAuth:success', self, response, context);
                     } else {
@@ -79,11 +87,12 @@ define("session/SessionModel", [
          */
         postAuth: function(opts){
             var self = this;
+            var data = {}
             $.ajax({
-                url: (opts.method == 'signup' ? App.API + 'signup' : this.url()+ opts.method) + '/' ,
+                url: App.AUTH_API + this.method_map[opts.method][1] + '/' ,
                 contentType: 'application/json',
                 dataType: 'json',
-                type: opts.method == 'logout' ? 'GET': 'POST',
+                type: this.method_map[opts.method][0],
                 beforeSend: function(xhr) {
                   App.addCsrfHeader(xhr);
                 },
@@ -94,8 +103,9 @@ define("session/SessionModel", [
                         var event = opts.method + ':' + status;
 
                         if(_.indexOf(['login', 'signup'], opts.method) !== -1){
-                            self.updateSessionUser( response.user || {} );
-                            self.set({ user_id: response.user.id, logged_in: true });
+                            // self.updateSessionUser( response.user || {} );
+                            self.set({ //user_id: response.user.id,
+                                logged_in: true });
                         }
                         if(_.indexOf(['logout', 'removeAccount'], opts.method) !== -1){
                             self.updateSessionUser( {} );
@@ -103,10 +113,10 @@ define("session/SessionModel", [
                         }
                         if (opts.method=='login'){
                             sessionCh.trigger(event, self, response, opts.context);
+                            sessionCh.request('checkAuth', opts.context);
                         }
                         else if (opts.method=='signup'){
                             sessionCh.trigger(event, self, response);
-                            if (status == 'success') sessionCh.trigger('login:success', self, response, opts.context);
                         }
                         else if (opts.method=='logout'){
                             sessionCh.trigger(event, self, response, opts.context);

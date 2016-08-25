@@ -25,22 +25,22 @@ define('SignupView', [
             return this.options;
         },
         ui : {
-            'signup_form': '#signup-form',
-            'signup_username': '#signup-username',
-            'signup_password': '#signup-password',
-            'signup_passwordconfirm': '#signup-password-confirm',
-            'signup_email': '#signup-email'
+            'form': '#form',
+            'username': '#username',
+            'password1': '#password1',
+            'password2': '#password2',
+            'email': '#email'
         },
         events: {
-            'click #signup-btn': 'onSignupAttempt',
-            'keyup #signup-password-confirm': 'onConfirmPasswordKeyup'
+            'click #signup': 'onSignupAttempt',
+            'keyup #password2': 'onConfirmPasswordKeyup'
         },
 
         // Allow enter press to trigger signup
         onConfirmPasswordKeyup: function(evt) {
             var k = evt.keyCode || evt.which;
 
-            if (k == 13 && this.ui.signup_password.val() === '') {
+            if (k == 13 && this.ui.password1.val() === '') {
                 evt.preventDefault(); // prevent enter-press submit when input is empty
             } else if (k == 13) {
                 evt.preventDefault();
@@ -51,12 +51,13 @@ define('SignupView', [
 
         onSignupAttempt: function(evt) {
             if (evt) evt.preventDefault();
-            if (this.ui.signup_form.parsley(App.ParsleyConfig).validate()) {
+            if (this.ui.form.parsley(App.ParsleyConfig).validate()) {
                 sessionCh.request('signup', {
                     user: {
-                        username: this.ui.signup_username.val(),
-                        raw_password: this.ui.signup_password.val(),
-                        email: this.ui.signup_email.val()
+                        username: this.ui.username.val(),
+                        password1: this.ui.password1.val(),
+                        password2: this.ui.password1.val(),
+                        email: this.ui.email.val()
                     }
                 }, this.options);
             } else {

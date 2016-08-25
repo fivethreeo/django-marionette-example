@@ -1,16 +1,14 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.conf.urls import *
 from django.views.generic import TemplateView
-
-from tastypie.api import Api
-from app.api import UserResource, CreateUserResource, UserProfileResource
-
-v1_api = Api(api_name='v1')
-v1_api.register(CreateUserResource())
-v1_api.register(UserResource())
-v1_api.register(UserProfileResource())
-
+from django.conf.urls import patterns, url, include
+from rest_framework import routers
+ 
+from . import api
+ 
+router = routers.DefaultRouter()
+router.register(r'accounts', api.UserView, 'list')
+ 
 from django.contrib import admin
 admin.autodiscover()
 
@@ -18,5 +16,8 @@ urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name="index.html")),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/', include(v1_api.urls))
+    url(r'^rest-auth/', include('app.auth_urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^api/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -26,14 +26,14 @@ define('LoginView', [
         },
 
         ui : {
-            'login_form': '#login-form',
-            'login_username': '#login-username',
-            'login_password': '#login-password'
+            'form': '#form',
+            'username': '#username',
+            'password': '#password'
         },
 
         events: {
-            'click #login-btn': 'onLoginAttempt',
-            'keyup #login-password': 'onPasswordKeyup',
+            'click #login': 'onLoginAttempt',
+            'keyup #password': 'onPasswordKeyup',
             'click #signup': 'onSignupClick'
         },
 
@@ -53,10 +53,10 @@ define('LoginView', [
         onLoginAttempt: function(evt) {
             if (evt) evt.preventDefault();
 
-            if (this.ui.login_form.parsley(App.ParsleyConfig).validate()) {
+            if (this.ui.form.parsley(App.ParsleyConfig).validate()) {
                 sessionCh.request('login', {
-                    username: this.ui.login_username.val(),
-                    password: this.ui.login_password.val()
+                    username: this.ui.username.val(),
+                    password: this.ui.password.val()
                 }, this.options);
             } else {
                 // Invalid clientside validations thru parsley
@@ -65,12 +65,12 @@ define('LoginView', [
 
         onSignupClick: function(evt) {
             if (evt) evt.preventDefault();
-            App.rootView.showChildView('content', new SignupView());
+            App.rootView.showChildView('content', new SignupView(this.options));
 
         },
 
         onLoginError: function(evt) {
-           console.log("Error", mod, res);
+           console.log("Error");
         }
 
     });
