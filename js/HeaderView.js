@@ -22,12 +22,18 @@ define('HeaderView', [
         },
         
         events: {
-            'click #logout-link': 'logout'
+            'click #logout-link': 'logout',
+            'click #remove-account-link': 'removeAccount'
         },
 
         logout: function(evt) {
             evt.preventDefault();
             sessionCh.request('logout');
+        },
+
+        removeAccount: function(evt) {
+            evt.preventDefault();
+            sessionCh.request('removeAccount');
         },
 
         logged_out: function() {

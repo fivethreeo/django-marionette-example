@@ -14,6 +14,9 @@ define('SignupView', [
 
         initialize: function(options) {
             this.options = options || {};
+            _.bindAll(this,
+                'onSignupError'
+            );
             this.listenTo(sessionCh, 'signup:success', this.onSignupSuccess);
             this.listenTo(sessionCh, 'signup:error', this.onSignupError);
         },
@@ -29,7 +32,8 @@ define('SignupView', [
             'username': '#username',
             'password1': '#password1',
             'password2': '#password2',
-            'email': '#email'
+            'email': '#email',
+            'errors': '#errors'
         },
         events: {
             'click #signup': 'onSignupAttempt',
@@ -51,6 +55,8 @@ define('SignupView', [
 
         onSignupAttempt: function(evt) {
             if (evt) evt.preventDefault();
+            this.ui.errors.html('');
+            this.ui.form.parsley().reset();
             if (this.ui.form.parsley(App.ParsleyConfig).validate()) {
                 sessionCh.request('signup', {
                     username: this.ui.username.val(),
@@ -69,9 +75,14 @@ define('SignupView', [
 
         },
 
-        onSignupError: function(evt) {
-            // if(DEBUG) console.log("SUCCESS", mod, res);
-
+        onSignupError: function(session, response, context) {
+          var self = this;
+          _.each(response, function(value, key) {
+            _.each(value, function(val) {
+              if (key == 'non_field_errors') self.ui.errors.append('<p class="bg-danger">'+val+'</p>')
+              else $('#'+key).parsley().addError(val, {message:val, updateClass:true});
+            });
+          });
         }
 
     });

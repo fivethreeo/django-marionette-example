@@ -19,6 +19,7 @@ require([
       initialize: function(options){
         this.listenTo(sessionCh, 'checkAuth:success', this.onAuthSuccess);
         this.listenTo(sessionCh, 'checkAuth:error', this.onAuthError);
+        this.listenTo(sessionCh, 'logout:success', this.index);
       },
       onAuthSuccess: function(session, response, context) {
         if (context.nextView) {
@@ -32,17 +33,13 @@ require([
       },
       index: function() {
         sessionCh.request('checkAuth', {nextView:IndexView});
-      },
-      signup: function() {
-          App.rootView.showChildView('content', new SignupView());
       }
     });
 
 
     var Router = Marionette.AppRouter.extend({
       appRoutes: {
-        '': 'index',
-        'signup': 'signup'
+        '': 'index'
       },
 
       controller: new Controller()
