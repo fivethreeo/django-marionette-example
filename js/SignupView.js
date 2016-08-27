@@ -14,9 +14,6 @@ define('SignupView', [
 
         initialize: function(options) {
             this.options = options || {};
-            _.bindAll(this,
-                'onSignupError'
-            );
             this.listenTo(sessionCh, 'signup:success', this.onSignupSuccess);
             this.listenTo(sessionCh, 'signup:error', this.onSignupError);
         },

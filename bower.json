@@ -20,7 +20,6 @@
   "dependencies": {
     "text": "~2.0.14",
     "backbone": "~1.2.3",
-    "bootstrap": "~3.3.6",
     "underscore": "~1.8.3",
     "select2": "~4.0.1",
     "backbone-filtered-collection": "https://github.com/samwgoldman/backbone-filtered-collection.git#swg-sort-reset-issue",
@@ -30,6 +29,7 @@
     "parsleyjs": "~2.4.4",
     "almond": "~0.3.2",
     "backbone.marionette": "~2.4.7",
-    "backbone.radio": "~1.0.5"
+    "backbone.radio": "~1.0.5",
+    "eonasdan-bootstrap-datetimepicker": "~4.17.37"
   }
 }

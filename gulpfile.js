@@ -42,12 +42,18 @@ gulp.task('js', function (callback) {
       name: 'init/Init',
       include: [
         'requireLib',
-        'text'
+        'text',
+        'bootstrap-datetimepicker'
       ],
       generateSourceMaps: !optimize,
       preserveLicenseComments: optimize,
       optimize: optimize ? "uglify" : "none",
       out: 'static/App.js',
+      shim: {
+        'bootstrap-datetimepicker': {
+          deps: ['moment', 'moment-timezone']
+        }
+      },
       paths: {
           'jquery': bower + 'jquery/dist/jquery',
           'underscore': bower + 'underscore/underscore',
@@ -57,11 +63,14 @@ gulp.task('js', function (callback) {
           'backbone.validation': bower + 'backbone.validation/src/backbone-validation-amd',
           'backbone.stickit': bower + 'backbone.stickit/backbone.stickit',
           'backbone-filter': bower + 'backbone-filtered-collection/backbone-filtered-collection',
-          'bootstrap': bower + 'bootstrap/dist/js/bootstrap',
+          'bootstrap': bower + 'bootstrap-sass/assets/javascripts/bootstrap',
           'text': bower + 'text/text',
           'select2': bower + 'select2/dist/js/select2',
           'requireLib': bower + 'almond/almond',
-          'parsleyjs': bower + 'parsleyjs/dist/parsley'
+          'parsleyjs': bower + 'parsleyjs/dist/parsley',
+          'bootstrap-datetimepicker': bower + 'eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker',
+          'moment': bower + 'moment/min/moment-with-locales',
+          'moment-timezone': bower + 'moment-timezone/builds/moment-timezone-with-data'
       }
   };
 

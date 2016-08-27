@@ -36,7 +36,7 @@ define("App", [
         errorsContainer: function(ParsleyField) {
             return ParsleyField.$element.parents('.form-group');
         },
-        errorsWrapper: '<span class="help-block">',
+        errorsWrapper: '<div class="help-block">',
         errorTemplate: '<div></div>'
     };  
     return App;
