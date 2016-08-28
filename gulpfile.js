@@ -43,15 +43,15 @@ gulp.task('js', function (callback) {
       include: [
         'requireLib',
         'text',
-        'bootstrap-datetimepicker'
+        'bootstrap.datetimepicker'
       ],
       generateSourceMaps: !optimize,
       preserveLicenseComments: optimize,
       optimize: optimize ? "uglify" : "none",
       out: 'static/App.js',
       shim: {
-        'bootstrap-datetimepicker': {
-          deps: ['moment', 'moment-timezone']
+        'bootstrap.datetimepicker': {
+          deps: ['moment', 'moment.timezone']
         }
       },
       paths: {
@@ -62,15 +62,15 @@ gulp.task('js', function (callback) {
           'marionette': bower + 'backbone.marionette/lib/backbone.marionette',
           'backbone.validation': bower + 'backbone.validation/src/backbone-validation-amd',
           'backbone.stickit': bower + 'backbone.stickit/backbone.stickit',
-          'backbone-filter': bower + 'backbone-filtered-collection/backbone-filtered-collection',
+          'backbone.filter': bower + 'backbone-filtered-collection/backbone-filtered-collection',
           'bootstrap': bower + 'bootstrap-sass/assets/javascripts/bootstrap',
           'text': bower + 'text/text',
           'select2': bower + 'select2/dist/js/select2',
           'requireLib': bower + 'almond/almond',
           'parsleyjs': bower + 'parsleyjs/dist/parsley',
-          'bootstrap-datetimepicker': bower + 'eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker',
+          'bootstrap.datetimepicker': bower + 'eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker',
           'moment': bower + 'moment/min/moment-with-locales',
-          'moment-timezone': bower + 'moment-timezone/builds/moment-timezone-with-data'
+          'moment.timezone': bower + 'moment-timezone/builds/moment-timezone-with-data'
       }
   };
 
@@ -105,7 +105,7 @@ gulp.task('sass', function () {
 });
 
 gulp.task('copy', function() {
-  gulp.src([path.join(__dirname, 'bower_components', 'bootstrap', 'fonts') + '/**/*' ])
+  gulp.src([path.join(__dirname, 'bower_components', 'bootstrap-sass', 'assets', 'fonts') + '/**/*' ])
     .pipe(gulp.dest(path.join(__dirname, 'static', 'fonts')));
 });
 
