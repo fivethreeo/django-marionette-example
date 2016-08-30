@@ -42,8 +42,7 @@ gulp.task('js', function (callback) {
       name: 'init/Init',
       include: [
         'requireLib',
-        'text',
-        'bootstrap.datetimepicker'
+        'text'
       ],
       generateSourceMaps: !optimize,
       preserveLicenseComments: optimize,
@@ -55,22 +54,23 @@ gulp.task('js', function (callback) {
         }
       },
       paths: {
+          'requireLib': bower + 'almond/almond',
+          'text': bower + 'text/text',
           'jquery': bower + 'jquery/dist/jquery',
           'underscore': bower + 'underscore/underscore',
           'backbone': bower + 'backbone/backbone',
           'backbone.radio': bower + 'backbone.radio/build/backbone.radio',
-          'marionette': bower + 'backbone.marionette/lib/backbone.marionette',
           'backbone.validation': bower + 'backbone.validation/src/backbone-validation-amd',
           'backbone.stickit': bower + 'backbone.stickit/backbone.stickit',
           'backbone.filter': bower + 'backbone-filtered-collection/backbone-filtered-collection',
+          'backgrid': bower + 'backgrid/lib/backgrid',
+          'marionette': bower + 'backbone.marionette/lib/backbone.marionette',
           'bootstrap': bower + 'bootstrap-sass/assets/javascripts/bootstrap',
-          'text': bower + 'text/text',
-          'select2': bower + 'select2/dist/js/select2',
-          'requireLib': bower + 'almond/almond',
-          'parsleyjs': bower + 'parsleyjs/dist/parsley',
-          'bootstrap.datetimepicker': bower + 'eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker',
           'moment': bower + 'moment/min/moment-with-locales',
-          'moment.timezone': bower + 'moment-timezone/builds/moment-timezone-with-data'
+          'moment.timezone': bower + 'moment-timezone/builds/moment-timezone-with-data',
+          'bootstrap.datetimepicker': bower + 'eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker',
+          'select2': bower + 'select2/dist/js/select2',
+          'parsleyjs': bower + 'parsleyjs/dist/parsley'
       }
   };
 

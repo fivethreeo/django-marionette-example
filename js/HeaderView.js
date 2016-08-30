@@ -12,7 +12,7 @@ define('HeaderView', [
 
     var sessionCh = Radio.channel('session');
 
-    return Marionette.ItemView.extend({
+    return Marionette.View.extend({
 
         initialize: function(options){
             this.options = options || {};
@@ -44,7 +44,7 @@ define('HeaderView', [
 
         template: _.template(template),
 
-        templateHelpers: function() {
+        templateContext: function() {
             var obj = sessionCh.request('object');
             var context = obj.toJSON();
             context.user = obj.user.toJSON();

@@ -16,8 +16,8 @@ define("auth/UserModel", [
         email: ""
     },
 
-    url: function(){
-        return App.API + "/user";
+    urlRoot: function(){
+        return "/api/users/";
     }
 
   });

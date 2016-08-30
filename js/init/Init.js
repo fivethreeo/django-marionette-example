@@ -6,14 +6,17 @@ require([
     'IndexView',
     'LoginView',
     'SignupView',
+    'auth/UserCollection',
+    'auth/UserTableView',
     'jquery',
     'backbone',
     'backbone.radio',
     'marionette',
     'underscore'
-], function (App, SessionModel, HeaderView, IndexView, LoginView, SignupView, $, Backbone, Radio, Marionette, _) {
+], function (App, SessionModel, HeaderView, IndexView, LoginView, SignupView, UserCollection, UserTableView, $, Backbone, Radio, Marionette, _) {
 
     var sessionCh = Radio.channel('session');
+    var rootCh = Radio.channel('root');
 
     var Controller = Marionette.Object.extend({
       initialize: function(options){
@@ -33,34 +36,37 @@ require([
       },
       index: function() {
         sessionCh.request('checkAuth', {nextView:IndexView});
+      },
+      users: function() {
+          App.rootView.showChildView('content', new UserTableView({collection: new UserCollection()}));
       }
     });
 
 
     var Router = Marionette.AppRouter.extend({
       appRoutes: {
-        '': 'index'
+        '': 'index',
+        'users/': 'users'
       },
 
       controller: new Controller()
     });
 
     App.on('start', function() {
-      App.session = new SessionModel({}); // Singleton session model
-      App.rootView = new RootView({el: $('body') });
-      App.rootView.render();
-      App.router = new Router();
+      new SessionModel({}); // Singleton session model
+      App.rootView = (new RootView({el: $('body') })).render();
+      new Router();
       Backbone.history.start({root:'/'}); // Start history when our application is ready
     });
 
-    var RootView = Marionette.LayoutView.extend({
+    var RootView = Marionette.View.extend({
       template: false,
       regions: {
         header: '#header',
         content: '#content'
       },
       onRender: function() {
-          this.showChildView('header', new HeaderView());
+         this.showChildView('header', new HeaderView());
          // this.showChildView('content', new IndexView());
       }
     });

@@ -28,8 +28,9 @@
     "backbone.stickit": "~0.9.2",
     "parsleyjs": "~2.4.4",
     "almond": "~0.3.2",
-    "backbone.marionette": "~2.4.7",
-    "backbone.radio": "~1.0.5",
-    "eonasdan-bootstrap-datetimepicker": "~4.17.37"
+    "backbone.marionette": "~3.0.0",
+    "backbone.radio": "~2.0.0",
+    "eonasdan-bootstrap-datetimepicker": "~4.17.37",
+    "backgrid": "~0.3.7"
   }
 }

@@ -3,6 +3,7 @@ $icon-font-path: "/static/fonts/bootstrap/";
 @import "_bootstrap";
 @import "select2/dist/css/select2";
 @import "eonasdan-bootstrap-datetimepicker/src/sass/bootstrap-datetimepicker-build";
+@import "backgrid/lib/backgrid";
 
 html, body {
     height: 100%;

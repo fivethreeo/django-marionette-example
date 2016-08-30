@@ -11,7 +11,7 @@ define('LoginView', [
 
     var sessionCh = Radio.channel('session');
 
-    return Marionette.ItemView.extend({
+    return Marionette.View.extend({
 
         initialize: function(options) {
             this.options = options || {};
