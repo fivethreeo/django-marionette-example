@@ -35,11 +35,6 @@ Linux: ::
 To build without uglyfi: ::
 
     nooptimize=true gulp build or gulp serve
-  
-Notes
-=====
-
-Signup not implemented.
 
 .. _nodejs: https://nodejs.org/
 .. _Python: https://www.python.org/
