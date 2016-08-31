@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.backends import ModelBackend 
+
 from rest_auth.app_settings import UserDetailsSerializer
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework import viewsets
@@ -27,8 +29,7 @@ class UserDetailsView(RetrieveUpdateDestroyAPIView):
     def get_object(self):
         return self.request.user
 
-
-class CustomListSerializer(serializers.ListSerializer):
+class PermissionListSerializer(serializers.ListSerializer):
 
     def to_representation(self, data):
         """
@@ -37,8 +38,9 @@ class CustomListSerializer(serializers.ListSerializer):
         # Dealing with nested relationships, data can be a Manager,
         # so, first get a queryset from the Manager if needed
         iterable = data.all() if isinstance(data, models.Manager) else data
-
-        return {'_permissions': 'my', 'results': [
+        backend = ModelBackend()
+        permissions = backend.get_all_permissions(self._context['view'].request.user)
+        return {'_permissions': permissions, 'results': [
             self.child.to_representation(item) for item in iterable
         ]}
 
@@ -50,11 +52,10 @@ class CustomListSerializer(serializers.ListSerializer):
 class CustomUserDetailsSerializer(UserDetailsSerializer):
 
     class Meta(UserDetailsSerializer.Meta):
-        list_serializer_class = CustomListSerializer
+        list_serializer_class = PermissionListSerializer
 
-class CustomPageNumberPagination(PageNumberPagination):
-    page_size=1
-
+class ResultsDictPageNumberPagination(PageNumberPagination):
+    
     def get_paginated_response(self, data):
         data = super(CustomPageNumberPagination, self).get_paginated_response(data).data
         if 'results' in data['results']:
@@ -66,8 +67,7 @@ class UserViewSet(viewsets.ModelViewSet):
     A simple ViewSet for viewing and editing the accounts
     associated with the user.
     """
-    authentication_classes = ()
     serializer_class = CustomUserDetailsSerializer
     permission_classes = () #[IsAuthenticated]
     queryset = User.objects.all()
-    pagination_class = CustomPageNumberPagination
+    pagination_class = ResultsDictPageNumberPagination
