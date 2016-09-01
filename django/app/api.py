@@ -14,6 +14,11 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
+try:
+    from guardian.core import ObjectPermissionChecker
+except ImportError:
+    pass
+
 class UserDetailsView(RetrieveUpdateDestroyAPIView):
     """
     Returns User's details in JSON format.
@@ -38,9 +43,7 @@ class PermissionListSerializer(serializers.ListSerializer):
         # Dealing with nested relationships, data can be a Manager,
         # so, first get a queryset from the Manager if needed
         iterable = data.all() if isinstance(data, models.Manager) else data
-        backend = ModelBackend()
-        permissions = backend.get_all_permissions(self._context['view'].request.user)
-        return {'_permissions': permissions, 'results': [
+        return {'_permissions': self.child.permissions(iterable), 'results': [
             self.child.to_representation(item) for item in iterable
         ]}
 
@@ -50,6 +53,35 @@ class PermissionListSerializer(serializers.ListSerializer):
         return ReturnDict(ret, serializer=self)
 
 class CustomUserDetailsSerializer(UserDetailsSerializer):
+
+    _permission_checker = None
+    with_object_permissions = True
+
+    def _get_user(self):
+        return self._context['view'].request.user
+
+    def _get_permission_checker(self):
+        if not self._permission_checker:
+            self._permission_checker = ObjectPermissionChecker(self._get_user())
+        return self._permission_checker
+
+    def _prefetch_permissions(self, objects):
+        self._get_permission_checker().prefetch_perms(objects)
+
+    def permissions(self, objects):
+        if self.with_object_permissions:
+            self._prefetch_permissions(objects)
+        backend = ModelBackend()
+        return backend.get_all_permissions(self._get_user())
+
+    def object_permissions(self, obj):
+        return self._get_permission_checker().get_perms(obj)
+
+    def to_representation(self, data):
+        rep = super(UserDetailsSerializer, self).to_representation(data)
+        if self.with_object_permissions:
+            rep['_permissions'] = self.object_permissions(data)
+        return rep
 
     class Meta(UserDetailsSerializer.Meta):
         list_serializer_class = PermissionListSerializer
