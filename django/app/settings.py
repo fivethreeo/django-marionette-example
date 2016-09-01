@@ -98,6 +98,11 @@ MEDIA_ROOT=os.path.join(os.path.dirname(upath(__file__)), "../../media")
 
 THUMBNAIL_DEBUG = True
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend'
+)
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
