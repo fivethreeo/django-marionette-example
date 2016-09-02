@@ -14,7 +14,7 @@ except ImportError:
 class ResultsDictPageNumberPagination(PageNumberPagination):
     
     def get_paginated_response(self, data):
-        data = super(CustomPageNumberPagination, self).get_paginated_response(data).data
+        data = super(ResultsDictPageNumberPagination, self).get_paginated_response(data).data
         if 'results' in data['results']:
             data.update(data['results'])
         return Response(data)
@@ -78,11 +78,3 @@ class PermissionDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         list_serializer_class = PermissionListSerializer
-
-class ResultsDictPageNumberPagination(PageNumberPagination):
-    
-    def get_paginated_response(self, data):
-        data = super(CustomPageNumberPagination, self).get_paginated_response(data).data
-        if 'results' in data['results']:
-            data.update(data['results'])
-        return Response(data)

@@ -5,13 +5,20 @@ from rest_framework import viewsets, filters, permissions
 from app.permissions import ViewObjectPermissions
 from app.serializers import PermissionListSerializer, ResultsDictPageNumberPagination
 
+from django.contrib.auth.backends import ModelBackend 
+
+try:
+    from guardian.core import ObjectPermissionChecker
+except ImportError:
+    pass
+
 class PermissionDetailsSerializer(UserDetailsSerializer):
 
     # use the PermissionDetailsSerialiser from app.serializers when not subclassing UserDetailsSerializer
 
     _permission_checker = None
     _model_permissions = []
-    with_object_permissions = True
+    with_object_permissions = False
 
     def _get_user(self):
         return self._context['view'].request.user

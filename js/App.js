@@ -4,10 +4,10 @@ define("App", [
     'backbone',
     'backbone.radio',
     'marionette',
-    'underscore',
-    'parsleyjs'
-], function ($, Backbone, Radio, Marionette, _, parsley) {
+    'underscore'
+], function ($, Backbone, Radio, Marionette, _) {
 
+    $.ajaxSetup({ cache: false }); // Force ajax call on all browsers
 
     var sessionCh = Radio.channel('session');
 
@@ -17,16 +17,19 @@ define("App", [
     // Just use GET and POST to support all browsers
     Backbone.emulateHTTP = true;
 
-    var oldSync = Backbone.sync;
+    Backbone.oldSync = Backbone.sync;
     Backbone.sync = function(method, model, options) {
         options.beforeSend = function(xhr){
           sessionCh.request('addToken', xhr);
         };
-        return oldSync(method, model, options);
+        return Backbone.oldSync(method, model, options);
     };
 
-    $.ajaxSetup({ cache: false }); // Force ajax call on all browsers
-
+    Backbone.ResultsCollection = Backbone.Collection.extend({
+        parse: function(response) {
+            return response.results;
+        }
+    });
     App.ParsleyConfig  = {
         errorClass: 'has-error',
         successClass: 'has-success',

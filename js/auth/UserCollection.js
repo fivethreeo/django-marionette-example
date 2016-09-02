@@ -8,7 +8,7 @@ define('auth/UserCollection', [
     'auth/UserModel'
 ], function (App, $, Backbone, Marionette, _, model) {
 
-  var UserCollection = Backbone.Collection.extend({
+  var UserCollection = Backbone.ResultsCollection.extend({
     model: model,
     url: '/api/users/'
   })
