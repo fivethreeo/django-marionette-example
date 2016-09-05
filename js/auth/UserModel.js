@@ -5,12 +5,20 @@ define("auth/UserModel", [
 ], function(App, Backbone) {
 
   var UserModel = Backbone.Model.extend({
+    
+    validation: {
+      username: [{
+        blank: false,
+        message: 'Username is required'
+      },
+      {minLength: 8}]
+    },
 
     initialize: function(){
     },
 
     defaults: {
-        id: 0,
+        id: null,
         username: "",
         name: "",
         email: ""
@@ -18,6 +26,10 @@ define("auth/UserModel", [
 
     urlRoot: function(){
         return "/api/users/";
+    },
+
+    url: function() {
+      return UserModel.__super__.url.call(this).replace(/[^\/]$/, '$&/') 
     }
 
   });

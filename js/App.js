@@ -4,7 +4,9 @@ define("App", [
     'backbone',
     'backbone.radio',
     'marionette',
-    'underscore'
+    'underscore',
+    'backbone.stickit', // add early
+    'backbone.validator' // add early
 ], function ($, Backbone, Radio, Marionette, _) {
 
     $.ajaxSetup({ cache: false }); // Force ajax call on all browsers

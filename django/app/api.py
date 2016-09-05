@@ -14,7 +14,7 @@ except ImportError:
 
 class PermissionDetailsSerializer(UserDetailsSerializer):
 
-    # use the PermissionDetailsSerialiser from app.serializers when not subclassing UserDetailsSerializer
+    # use the PermissionDetailsSerializer from app.serializers when not subclassing UserDetailsSerializer
 
     _permission_checker = None
     _model_permissions = []
@@ -55,6 +55,8 @@ class PermissionDetailsSerializer(UserDetailsSerializer):
 
     class Meta(UserDetailsSerializer.Meta):
         list_serializer_class = PermissionListSerializer
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+
 
 class UserDetailsView(RetrieveUpdateDestroyAPIView):
     """

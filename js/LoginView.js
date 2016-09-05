@@ -6,11 +6,27 @@ define('LoginView', [
     'backbone',
     'marionette',
     'underscore',
-    'backbone.radio'
+    'backbone.radio',
+    'parsleyjs'
 ], function(App, SignupView, template, $, Backbone, Marionette, _, Radio) {
 
     var sessionCh = Radio.channel('session');
 
+    var LoginModel = Backbone.Model.extend({
+
+        initialize: function(){
+        },
+
+        defaults: {
+            username: "",
+            password: ""
+        },
+
+        urlRoot: function(){
+            return "/api/users/";
+        }
+
+    });
     return Marionette.View.extend({
 
         initialize: function(options) {

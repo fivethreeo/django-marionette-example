@@ -31,6 +31,8 @@
     "backbone.marionette": "~3.0.0",
     "backbone.radio": "~2.0.0",
     "eonasdan-bootstrap-datetimepicker": "~4.17.37",
-    "backgrid": "~0.3.7"
+    "backgrid": "~0.3.7",
+    "validate": "validate.js#~0.10.0",
+    "backbone-validator": "~0.3.3"
   }
 }

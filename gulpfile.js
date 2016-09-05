@@ -51,7 +51,7 @@ gulp.task('js', function (callback) {
       shim: {
         'bootstrap.datetimepicker': {
           deps: ['moment', 'moment.timezone']
-        }
+        },
       },
       paths: {
           'requireLib': bower + 'almond/almond',
@@ -60,10 +60,8 @@ gulp.task('js', function (callback) {
           'underscore': bower + 'underscore/underscore',
           'backbone': bower + 'backbone/backbone',
           'backbone.radio': bower + 'backbone.radio/build/backbone.radio',
-          'backbone.validation': bower + 'backbone.validation/src/backbone-validation-amd',
+          'backbone.validator': bower + 'backbone-validator/backbone-validator',
           'backbone.stickit': bower + 'backbone.stickit/backbone.stickit',
-          'backbone.filter': bower + 'backbone-filtered-collection/backbone-filtered-collection',
-          'backgrid': bower + 'backgrid/lib/backgrid',
           'marionette': bower + 'backbone.marionette/lib/backbone.marionette',
           'bootstrap': bower + 'bootstrap-sass/assets/javascripts/bootstrap',
           'moment': bower + 'moment/min/moment-with-locales',
