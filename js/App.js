@@ -17,6 +17,26 @@ define("App", [
 
     var App = new Marionette.Application();
 
+    // Just use GET and POST to support all browsers
+    Backbone.emulateHTTP = true;
+
+    Backbone.oldSync = Backbone.sync;
+    Backbone.sync = function(method, model, options) {
+        options.beforeSend = function(xhr){
+          sessionCh.request('addToken', xhr);
+        };
+        return Backbone.oldSync(method, model, options);
+    };
+    
+    /*
+    Backbone.Object = function(options) {}
+    _.extend(Backbone.Object.prototype, {})
+    // just to get extend functionality
+    Backbone.Object.extend = Backbone.Model.extend;
+
+    var MyObject = Backbone.Object.extend({})
+    */
+
     Backbone.History.prototype.loadUrl = function(fragment) {
     
     // Attempt to load the current URL fragment. If a route succeeds with a
@@ -31,24 +51,6 @@ define("App", [
           handler.callback(fragment);
         }
       });
-    };
-
-    Backbone.Object = function(options) {}
-    _.extend(Backbone.Object.prototype, {})
-    // just to get extend functionality
-    Backbone.Object.extend = Backbone.Model.extend;
-
-    var MyObject = Backbone.Object.extend({})
-
-    // Just use GET and POST to support all browsers
-    Backbone.emulateHTTP = true;
-
-    Backbone.oldSync = Backbone.sync;
-    Backbone.sync = function(method, model, options) {
-        options.beforeSend = function(xhr){
-          sessionCh.request('addToken', xhr);
-        };
-        return Backbone.oldSync(method, model, options);
     };
 
     Backbone.ResultsCollection = Backbone.Collection.extend({
