@@ -6,8 +6,7 @@ define('LoginView', [
     'backbone',
     'marionette',
     'underscore',
-    'backbone.radio',
-    'parsleyjs'
+    'backbone.radio'
 ], function(App, SignupView, template, $, Backbone, Marionette, _, Radio) {
 
     var sessionCh = Radio.channel('session');
@@ -110,7 +109,7 @@ define('LoginView', [
 
         onSignupClick: function(evt) {
             if (evt) evt.preventDefault();
-            App.rootView.showChildView('content', new SignupView(this.options));
+            new SignupView(_.extend(this.options, {el:'#content'})).render();
         }
 
     });

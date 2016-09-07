@@ -9,12 +9,29 @@ define("App", [
     'backbone.validator' // add early
 ], function ($, Backbone, Radio, Marionette, _) {
 
+    // This module does all overriding / initialization before Init starts the app
+
     $.ajaxSetup({ cache: false }); // Force ajax call on all browsers
 
     var sessionCh = Radio.channel('session');
 
     var App = new Marionette.Application();
-    App.AUTH_API = "/rest-auth/"; // Base API URL (used by models & collections
+
+    Backbone.History.prototype.loadUrl = function(fragment) {
+    
+    // Attempt to load the current URL fragment. If a route succeeds with a
+    // match, returns `true`. If no defined routes matches the fragment,
+    // returns `false`.
+    // RB 9/15/2011: overriding this function
+    
+      if (!this.matchRoot()) return false;
+      fragment = this.fragment = this.getFragment(fragment);
+      return _.some(this.handlers, function(handler) {
+        if (handler.route.test(fragment)) {
+          handler.callback(fragment);
+        }
+      });
+    };
 
     Backbone.Object = function(options) {}
     _.extend(Backbone.Object.prototype, {})
@@ -129,19 +146,6 @@ define("App", [
 
     })
 
-
-    App.ParsleyConfig  = {
-        errorClass: 'has-error',
-        successClass: 'has-success',
-        classHandler: function(ParsleyField) {
-            return ParsleyField.$element.parents('.form-group');
-        },
-        errorsContainer: function(ParsleyField) {
-            return ParsleyField.$element.parents('.form-group');
-        },
-        errorsWrapper: '<div class="help-block">',
-        errorTemplate: '<div></div>'
-    };  
     return App;
 
 });

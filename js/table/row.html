@@ -1,0 +1,7 @@
+<% _.each(columns, function(column) { %>
+   <td<% if (column.wrap) { %>><<%- column.wrap %><% } %> data-field="<%- column['attribute'] %>" data-validate="<%- column['attribute'] %>"
+     <% _.each(column['attributes'], function(val, attr) { %>
+     <%- attr %>="<%- val %>">
+     <% }); %>  	
+     <% if (column.wrap) { %></<%- column.wrap %>><% } %></td>
+<% }); %>

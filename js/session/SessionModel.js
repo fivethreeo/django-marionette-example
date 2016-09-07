@@ -24,7 +24,7 @@ define("session/SessionModel", [
 
         logout: function(context){
           var self = this;
-          this.logoutSingleton.fetch({
+          this.logoutSingleton.save(null, {
             success: function(model, response) {
                 self.set({ logged_in : false });
                 self.updateSessionUser({})
@@ -33,7 +33,7 @@ define("session/SessionModel", [
             error: function(model, response) {
                 sessionCh.trigger('logout:error', self, response, context);
             }
-          )
+          })
         },
 
         removeAccount: function(context){
@@ -47,7 +47,8 @@ define("session/SessionModel", [
             },
             error: function(model, response) {
                 sessionCh.trigger('removeAccount:error', self, response, context);
-            })
+            }
+          })
         },
 
         initialize: function(){
@@ -74,7 +75,6 @@ define("session/SessionModel", [
             this.logoutSingleton = new Logout();
             this.removeSingleton = new RemoveAccount();
 
-
         },
 
         // Initialize with negative/empty defaults
@@ -85,7 +85,7 @@ define("session/SessionModel", [
         },
 
         url: function(){
-            return '/rest-auth/user/";
+            return '/rest-auth/user/';
         },
 
         getObject : function() {
@@ -152,7 +152,7 @@ define("session/SessionModel", [
                 sessionCh.trigger('checkAuth:complete', self, response, context);  
             });
         }
-    }
+    });
 
     return SessionModel;
 

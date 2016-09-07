@@ -1,4 +1,4 @@
-define('HeaderView', [
+define('Header', [
     'App',
     'text!templates/header.html',
     'jquery',
@@ -12,10 +12,6 @@ define('HeaderView', [
     var sessionCh = Radio.channel('session');
 
     var HeaderView = Marionette.View.extend({
-        template: false,
-        regions: {
-          header: '#header'
-        },
 
         initialize: function(options){
             this.options = options || {};
@@ -56,7 +52,7 @@ define('HeaderView', [
 
     var HeaderRouter = Marionette.AppRouter.extend({
       initialize: function () {
-        this.view = new HeaderView({el: $('body') });
+        this.view = new HeaderView({el:'#header'});
         this.route('*path', 'default', this.defaultRoute);
       },
       defaultRoute: function(){
