@@ -8,11 +8,49 @@ define("session/SessionModel", [
 
   var sessionCh = Radio.channel('session');
 
+  var RemoveAccount = Backbone.Model.extend({
+    url: function() {
+        return '/api/removeuser/'
+    }
+  });
+
+  var Logout = Backbone.Model.extend({
+    url: function() {
+        return '/rest-auth/logout/'
+    }
+  });
+
   var SessionModel = Backbone.Model.extend({
 
+        logout: function(context){
+          var self = this;
+          this.logoutSingleton.fetch({
+            success: function(model, response) {
+                self.set({ logged_in : false });
+                self.updateSessionUser({})
+                sessionCh.trigger('logout:success', self, response, context);
+            },
+            error: function(model, response) {
+                sessionCh.trigger('logout:error', self, response, context);
+            }
+          )
+        },
+
+        removeAccount: function(context){
+          var self = this;
+          this.removeSingleton.destroy({
+            success: function(model, response) {
+                self.set({ logged_in : false });
+                self.updateSessionUser({})
+                sessionCh.trigger('removeAccount:success', self, response, context);
+                sessionCh.trigger('logout:success', self, response, context);
+            },
+            error: function(model, response) {
+                sessionCh.trigger('removeAccount:error', self, response, context);
+            })
+        },
+
         initialize: function(){
-            // Singleton user object
-            this.user = new UserModel({});
             _.bindAll(this,
                 'logout',
                 'removeAccount',
@@ -30,11 +68,13 @@ define("session/SessionModel", [
             sessionCh.reply('addCsrfHeader', this.addCsrfHeader);
             sessionCh.reply('setToken', this.setToken);
 
-            this.method_map = {
-                logout: ['POST', 'logout'],
-                checkAuth:  ['GET', 'user'],
-                removeAccount: ['DELETE', '/api/removeuser']
-            }
+
+            // Singleton user object
+            this.user = new UserModel();
+            this.logoutSingleton = new Logout();
+            this.removeSingleton = new RemoveAccount();
+
+
         },
 
         // Initialize with negative/empty defaults
@@ -45,7 +85,7 @@ define("session/SessionModel", [
         },
 
         url: function(){
-            return App.AUTH_API + "user/";
+            return '/rest-auth/user/";
         },
 
         getObject : function() {
@@ -88,9 +128,7 @@ define("session/SessionModel", [
         },
 
         /*
-         * Check for session from API 
-         * The API will parse client cookies using its secret token
-         * and return a user object if authenticated
+         * Will return a user object if authenticated
          */
         checkAuth: function(context) {
             var self = this;
@@ -113,63 +151,8 @@ define("session/SessionModel", [
             }).always( function(response){
                 sessionCh.trigger('checkAuth:complete', self, response, context);  
             });
-        },
-
-
-        /*
-         * Abstracted fxn to make a POST request to the auth endpoint
-         * This takes care of the CSRF header for security, as well as
-         * updating the user and session after receiving an API response
-         */
-        postAuth: function(opts){
-            var self = this;
-            var mapped_suffix = this.method_map[opts.method][1];
-            var apiurl = ((mapped_suffix[0] == '/') ? '' : App.AUTH_API) +
-              mapped_suffix + '/';
-            $.ajax({
-                url: apiurl,
-                contentType: 'application/json',
-                dataType: 'json',
-                type: this.method_map[opts.method][0],
-                beforeSend: function(xhr) {
-                  sessionCh.request('addToken', xhr);
-                },
-                data:  JSON.stringify( _.omit(opts, 'method', 'context') ),
-                success: function(response){
-
-                        var status = (!response || !response.error) ? 'success' : 'error';
-                        var event = opts.method + ':' + status;
-
-                        if(_.indexOf(['logout', 'removeAccount'], opts.method) !== -1){
-                            self.updateSessionUser( {} );
-                            self.set({ token: '', logged_in: false });
-                        }
-                        if (opts.method=='logout'){
-                            sessionCh.trigger(event, self, response, opts.context);
-                        }
-                        if (opts.method=='removeAccount'){
-                            sessionCh.trigger(event, self, response);
-                            if (status == 'success') sessionCh.trigger('logout:success', self, response, opts.context);
-                        }
-                },
-                error: function(xhr, response){
-                    var event = opts.method + ':' + 'error';
-                    sessionCh.trigger(event, self, xhr.responseJSON, opts.context);
-                }
-            }).always( function(response){
-                sessionCh.trigger('postAuth:complete', self, response, opts.context);
-            });
-        },
-
-        logout: function(opts, context){
-            this.postAuth(_.extend(opts||{}, { method: 'logout', context:context } ));
-        },
-
-        removeAccount: function(opts, context){
-            this.postAuth(_.extend(opts||{}, { method: 'removeAccount', context:context }));
         }
-
-    });
+    }
 
     return SessionModel;
 

@@ -89,7 +89,7 @@ define('LoginView', [
             'keyup #password': 'onPasswordKeyup',
             'click #signup': 'onSignupClick'
         },
-        
+
         // Allow enter press to trigger login
         onPasswordKeyup: function(evt) {
             var k = evt.keyCode || evt.which;

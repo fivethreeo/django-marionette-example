@@ -40,7 +40,7 @@ define('SignupView', [
                     required: true,
                     blank: false,
                     fn: function(value) {
-                        return self.get('password1') !== value ? 'Must be the same' : true
+                        return self.get('password1') !== value ? 'Must be the same as password' : true
                     }
                 },
 
@@ -83,7 +83,7 @@ define('SignupView', [
             observe: 'password1',
             updateMethod: 'val',
             validateHandler: 'bootstrap',
-            setOptions: {validate:true}
+            setOptions: {validate:true,suppress:true}
           },
           '#password2': {
             observe: 'password2',
