@@ -1,5 +1,11 @@
 
 
+.. image:: https://raw.githubusercontent.com/fivethreeo/django-marionette-example/develop/login.png
+
+.. image:: https://raw.githubusercontent.com/fivethreeo/django-marionette-example/develop/signup.png
+
+.. image:: https://raw.githubusercontent.com/fivethreeo/django-marionette-example/develop/logged_in.png
+
 Installation
 ============
 
@@ -35,6 +41,7 @@ Linux: ::
 To build without uglyfi: ::
 
     nooptimize=true gulp build or gulp serve
+
 
 .. _nodejs: https://nodejs.org/
 .. _Python: https://www.python.org/

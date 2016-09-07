@@ -33,7 +33,7 @@ require([
       })
     });
 
-    var Router = Marionette.AppRouter.extend({
+    var MainRouter = Marionette.AppRouter.extend({
       appRoutes: {
         '': 'index',
       },
@@ -43,9 +43,8 @@ require([
 
     App.on('start', function() {
       new SessionModel({}); // Singleton session model
-
       new HeaderRouter();
-            new Router();
+      new MainRouter();
       Backbone.history.start({root:'/'}); // Start history when our application is ready
     });
 
