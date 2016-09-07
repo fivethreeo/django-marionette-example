@@ -8,10 +8,12 @@ define("auth/UserModel", [
     
     validation: {
       username: [{
-        blank: false,
+        required: true,
         message: 'Username is required'
-      },
-      {minLength: 8}]
+      }, {
+        minLength: 8,
+        message: 'Username is too short'
+      }]
     },
 
     initialize: function(){
@@ -31,7 +33,7 @@ define("auth/UserModel", [
     url: function() {
       return UserModel.__super__.url.call(this).replace(/[^\/]$/, '$&/') 
     }
-
+    
   });
   
   return UserModel;

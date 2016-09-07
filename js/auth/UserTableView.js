@@ -9,82 +9,36 @@ define('auth/UserTableView', [
     'text!auth/row.html'
 ], function (App, $, Backbone, Marionette, _, table_template, row_template) {
 
-
-  var RowView = Marionette.View.extend({
+  
+  var RowView = Marionette.ValidationView.extend({
  
     bindings: {
       '[data-field=username]': {
         observe: 'username',
-        setOptions: {validate: true, suppress: true},
-        validateHandler: 'tooltip'
+        updateMethod: 'text',
+        validateHandler: 'tooltip',
+        setOptions: {validate:true}
       },
-      '[data-field=non_field_errors]': {
+      '[data-field=non_field_errors]': { // just for validation options
         observe: 'non_field_errors',
         validateHandler: 'tooltip'
       }
     },
 
     events: {
-      'keypress [data-field=username]': function (event) {
-        if ((event.keyCode || event.which) === 13 && this.model.isValid()) {
-          event.preventDefault()
-          this.model.save()
+      'keypress [data-field=username]': function(e) {
+        if ((e.keyCode || e.which) === 13) {
+          e.preventDefault()
         }
       }
     },
 
-    modelEvents: {
-      error: function(model, xhr, options) {
-        var self = this; 
-        model.triggerValidated(null, xhr.responseJSON);
-      }
-    },
-
-
-    validationHandlers: {
-      tooltip: {
-        valid: function (attrName, attrValue, model, selector){
-          this.$(selector).tooltip('destroy');
-        },
-        invalid: function(attrName, attrValue, errors, model, selector){
-          this.$(selector).tooltip({title:errors[0]}).tooltip('show')
-        }
-      }
-    },
-
-    onValidField: function(attrName, attrValue, model) {
-      var self = this;
-      _.each(_.result(this, 'bindings'), function(binding, selector){
-        if (_.isObject(binding)) {
-          if (binding.observe == attrName) {
-            self.validationHandlers[binding.validateHandler]
-              .valid.call(self, attrName, attrValue, model, selector)
-          }
-        }
-      });    },
-
-    onInvalidField: function(attrName, attrValue, errors, model) {
-      var self = this;
-      _.each(_.result(this, 'bindings'), function(binding, selector){
-        if (_.isObject(binding)) {
-          if (binding.observe == attrName) {
-            self.validationHandlers[binding.validateHandler]
-              .invalid.call(self, attrName, attrValue, errors, model, selector)
-          }
-        }
-      });
-    },
     tagName: 'tr',
     template: _.template(row_template),
     templateContext: function() {
       return {
         columns: this.getOption('columns')
       }
-    },
-
-    onRender: function() {
-      this.stickit();
-      this.bindValidation();
     }
   });
 

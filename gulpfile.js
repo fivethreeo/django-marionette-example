@@ -73,11 +73,10 @@ gulp.task('js', function (callback) {
   };
 
   return requirejs.optimize(config, function (res) {
-
       callback();
-
   }, function(err) {
-    console.log(err);
+     console.error('requirejs task failed', err)
+     callback();
   });
 
 });

@@ -10,12 +10,59 @@ define('SignupView', [
 
     var sessionCh = Radio.channel('session');
 
-    return Marionette.View.extend({
+    var SignupModel = Backbone.Model.extend({
+
+        defaults: {
+            username: "",
+            password1: "",
+            password2: "",
+            email: "",
+            key: "",
+        },
+
+        validation: function() {
+            var self = this
+            return {
+                username: {
+                    required: true,
+                    blank: false,
+                    minLength: 4
+                },
+
+                password1: {
+                    required: true,
+                    blank: false,
+                    minLength: 5,
+                    maxLength: 25
+                },
+
+                password2: {
+                    required: true,
+                    blank: false,
+                    fn: function(value) {
+                        return self.get('password1') !== value ? 'Must be the same' : true
+                    }
+                },
+
+                email: {
+                  required: true,
+                  format: 'email',
+                  message: 'Not a valid email'
+                }
+            }
+
+        },
+
+        urlRoot: function(){
+            return "/rest-auth/registration/";
+        }
+
+    });
+    return Marionette.ValidationView.extend({
 
         initialize: function(options) {
             this.options = options || {};
-            this.listenTo(sessionCh, 'signup:success', this.onSignupSuccess);
-            this.listenTo(sessionCh, 'signup:error', this.onSignupError);
+            this.model = new SignupModel()
         },
 
         template: _.template(template),
@@ -24,62 +71,55 @@ define('SignupView', [
         templateHelpers: function() {
             return this.options;
         },
-        ui : {
-            'form': '#form',
-            'username': '#username',
-            'password1': '#password1',
-            'password2': '#password2',
-            'email': '#email',
-            'errors': '#errors'
+
+        bindings: {
+          '#username': {
+            observe: 'username',
+            updateMethod: 'val',
+            validateHandler: 'bootstrap',
+            setOptions: {validate:true}
+          },
+          '#password1': {
+            observe: 'password1',
+            updateMethod: 'val',
+            validateHandler: 'bootstrap',
+            setOptions: {validate:true}
+          },
+          '#password2': {
+            observe: 'password2',
+            updateMethod: 'val',
+            validateHandler: 'bootstrap',
+            setOptions: {validate:true}
+          },
+          '#email': {
+            observe: 'email',
+            updateMethod: 'val',
+            validateHandler: 'bootstrap',
+            setOptions: {validate:true}
+          },
+          'form .form-errors': { // just for validation options
+            observe: 'non_field_errors',
+            validateHandler: 'form'
+          }
         },
+
+        modelEvents: {
+          error: function(model, xhr, options) {
+            this.model.triggerValidated(xhr.responseJSON, xhr.responseJSON);
+          },
+          'change:key': function(model, value){
+            sessionCh.request('setToken', value)
+            sessionCh.request('checkAuth', this.options)
+          }
+        },
+
         events: {
             'click #signup': 'onSignupAttempt',
-            'keyup #password2': 'onConfirmPasswordKeyup'
-        },
-
-        // Allow enter press to trigger signup
-        onConfirmPasswordKeyup: function(evt) {
-            var k = evt.keyCode || evt.which;
-
-            if (k == 13 && this.ui.password1.val() === '') {
-                evt.preventDefault(); // prevent enter-press submit when input is empty
-            } else if (k == 13) {
-                evt.preventDefault();
-                this.onSignupAttempt();
-                return false;
-            }
         },
 
         onSignupAttempt: function(evt) {
             if (evt) evt.preventDefault();
-            this.ui.errors.html('');
-            this.ui.form.parsley().reset();
-            if (this.ui.form.parsley(App.ParsleyConfig).validate()) {
-                sessionCh.request('signup', {
-                    username: this.ui.username.val(),
-                    password1: this.ui.password1.val(),
-                    password2: this.ui.password1.val(),
-                    email: this.ui.email.val()
-                }, this.options);
-            } else {
-                // Invalid clientside validations thru parsley
-            }
-        },
-
-
-        onSignupSuccess: function(evt) {
-            // if(DEBUG) console.log("SUCCESS", mod, res);
-
-        },
-
-        onSignupError: function(session, response, context) {
-          var self = this;
-          _.each(response, function(value, key) {
-            _.each(value, function(val) {
-              if (key == 'non_field_errors') self.ui.errors.append('<p class="bg-danger">'+val+'</p>')
-              else $('#'+key).parsley().addError(val, {message:val, updateClass:true});
-            });
-          });
+            this.model.save()
         }
 
     });

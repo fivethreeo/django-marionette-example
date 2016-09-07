@@ -14,23 +14,37 @@ define('LoginView', [
 
     var LoginModel = Backbone.Model.extend({
 
-        initialize: function(){
-        },
-
         defaults: {
             username: "",
-            password: ""
+            password: "",
+            key: "",
+        },
+
+        validation: {
+            username: {
+                required: true,
+                blank: false,
+                minLength: 4
+            },
+
+            password: {
+                required: true,
+                blank: false,
+                minLength: 5,
+                maxLength: 25
+            }
         },
 
         urlRoot: function(){
-            return "/api/users/";
+            return "/rest-auth/login/";
         }
 
     });
-    return Marionette.View.extend({
+    return Marionette.ValidationView.extend({
 
         initialize: function(options) {
             this.options = options || {};
+            this.model = new LoginModel()
             this.listenTo(sessionCh, 'login:error', this.onLoginError);
         },
 
@@ -41,11 +55,33 @@ define('LoginView', [
             return this.options;
         },
 
-        ui : {
-            'form': '#form',
-            'username': '#username',
-            'password': '#password',
-            'errors': '#errors'
+        bindings: {
+          '#username': {
+            observe: 'username',
+            updateMethod: 'val',
+            validateHandler: 'bootstrap',
+            setOptions: {validate:true}
+          },
+          '#password': {
+            observe: 'password',
+            updateMethod: 'val',
+            validateHandler: 'bootstrap',
+            setOptions: {validate:true}
+          },
+          'form .form-errors': { // just for validation options
+            observe: 'non_field_errors',
+            validateHandler: 'form'
+          }
+        },
+
+        modelEvents: {
+          error: function(model, xhr, options) {
+            this.model.triggerValidated(xhr.responseJSON, xhr.responseJSON);
+          },
+          'change:key': function(model, value){
+            sessionCh.request('setToken', value)
+            sessionCh.request('checkAuth', this.options)
+          }
         },
 
         events: {
@@ -53,12 +89,12 @@ define('LoginView', [
             'keyup #password': 'onPasswordKeyup',
             'click #signup': 'onSignupClick'
         },
-
+        
         // Allow enter press to trigger login
         onPasswordKeyup: function(evt) {
             var k = evt.keyCode || evt.which;
 
-            if (k == 13 && this.ui.password.val() === '') {
+            if (k == 13 && this.model.get('password')=== '') {
                 evt.preventDefault(); // prevent enter-press submit when input is empty
             } else if (k == 13) {
                 evt.preventDefault();
@@ -69,32 +105,12 @@ define('LoginView', [
 
         onLoginAttempt: function(evt) {
             if (evt) evt.preventDefault();
-            this.ui.errors.html('');
-            this.ui.form.parsley().reset();
-            if (this.ui.form.parsley(App.ParsleyConfig).validate()) {
-                sessionCh.request('login', {
-                    username: this.ui.username.val(),
-                    password: this.ui.password.val()
-                }, this.options);
-            } else {
-                // Invalid clientside validations thru parsley
-            }
+            this.model.save()
         },
 
         onSignupClick: function(evt) {
             if (evt) evt.preventDefault();
             App.rootView.showChildView('content', new SignupView(this.options));
-        },
-
-        onLoginError: function(session, response, context) {
-          var self = this;
-          _.each(response, function(value, key) {
-            _.each(value, function(val) {
-              if (key == 'non_field_errors') self.ui.errors.append('<p class="bg-danger">'+val+'</p>')
-              else $('#'+key).parsley().addError(val, {message:val, updateClass:true});
-            });
-          });
-
         }
 
     });

@@ -1,28 +1,28 @@
 
 <div class="col-md-4 center-block">
     <h1>Login</h1>
-    <div id="errors">
-    </div>
-    <form id="form" class="form text-left" data-parsley-validate="parsley">
+    <form id="form" class="form text-left">
+        <div class="bg-danger form-errors">
+        </div>
         <div class="main-form">
             <div class="group">
                 <div class="form-group">
                     <label for="username" class="sr-only">Username</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Username" data-parsley-required="true" data-parsley-notblank="true">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="password" class="sr-only">Password</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" data-parsley-required="true" data-parsley-notblank="true" data-parsley-rangelength="[5,25]">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password"">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                     </div>
                     
                 </div>
             </div>
-            <button type="button" id="login" class="btn btn-lg btn-primary btn-block" data-parsley-bypass>Sign in</button>
+            <button type="button" id="login" class="btn btn-lg btn-primary btn-block">Sign in</button>
         </div>
         <div class="etc-form">
             <!--<p>forgot your password? <a href="#">click here</a></p>-->

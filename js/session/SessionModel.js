@@ -14,27 +14,23 @@ define("session/SessionModel", [
             // Singleton user object
             this.user = new UserModel({});
             _.bindAll(this,
-                'login',
                 'logout',
-                'signup',
                 'removeAccount',
                 'checkAuth',
                 'getObject',
                 'addToken',
+                'setToken',
                 'addCsrfHeader'
             );
-            sessionCh.reply('login', this.login);
             sessionCh.reply('logout', this.logout);
-            sessionCh.reply('signup', this.signup);
             sessionCh.reply('removeAccount', this.removeAccount);
             sessionCh.reply('checkAuth', this.checkAuth);
             sessionCh.reply('object', this.getObject);
             sessionCh.reply('addToken', this.addToken);
             sessionCh.reply('addCsrfHeader', this.addCsrfHeader);
+            sessionCh.reply('setToken', this.setToken);
 
             this.method_map = {
-                signup: ['POST', 'registration'],
-                login: ['POST', 'login'],
                 logout: ['POST', 'logout'],
                 checkAuth:  ['GET', 'user'],
                 removeAccount: ['DELETE', '/api/removeuser']
@@ -80,6 +76,10 @@ define("session/SessionModel", [
 
         addToken : function(xhr) {
             if (this.get('token')) xhr.setRequestHeader('Authorization', 'Token ' + this.get('token'));
+        },
+
+        setToken : function(token) {
+            this.set({ token:token, logged_in: true})
         },
 
         // Fxn to update user attributes after recieving API response
@@ -140,20 +140,9 @@ define("session/SessionModel", [
                         var status = (!response || !response.error) ? 'success' : 'error';
                         var event = opts.method + ':' + status;
 
-                        if(_.indexOf(['login', 'signup'], opts.method) !== -1){
-                            if (status == 'success') self.set({ token: response.key, logged_in: true });
-                        }
                         if(_.indexOf(['logout', 'removeAccount'], opts.method) !== -1){
                             self.updateSessionUser( {} );
                             self.set({ token: '', logged_in: false });
-                        }
-                        if (opts.method=='login'){
-                            sessionCh.trigger(event, self, response, opts.context);
-                            if (status == 'success') sessionCh.request('checkAuth', opts.context);
-                        }
-                        if (opts.method=='signup'){
-                            sessionCh.trigger(event, self, response);
-                            if (status == 'success') sessionCh.request('checkAuth', opts.context);
                         }
                         if (opts.method=='logout'){
                             sessionCh.trigger(event, self, response, opts.context);
@@ -172,17 +161,8 @@ define("session/SessionModel", [
             });
         },
 
-
-        login: function(opts, context){
-            this.postAuth(_.extend(opts||{}, { method: 'login', context:context }));
-        },
-
         logout: function(opts, context){
             this.postAuth(_.extend(opts||{}, { method: 'logout', context:context } ));
-        },
-
-        signup: function(opts, context){
-            this.postAuth(_.extend(opts||{}, { method: 'signup', context:context  }));
         },
 
         removeAccount: function(opts, context){
