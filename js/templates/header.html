@@ -9,6 +9,12 @@
             <% if(logged_in){ %>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Actions <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a id="add-restaurant" href="#" data-parsley-bypass>Add restaurant</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= user.username %> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a id="logout-link" href="#" data-parsley-bypass>Sign Out</a></li>

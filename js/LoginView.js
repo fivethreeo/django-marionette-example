@@ -78,8 +78,13 @@ define('LoginView', [
             this.model.triggerValidated(xhr.responseJSON, xhr.responseJSON);
           },
           'change:key': function(model, value){
+            var that = this; 
             sessionCh.request('setToken', value)
-            sessionCh.request('checkAuth', this.options)
+            sessionCh.request('checkAuth', {
+                success: function() {
+                   Backbone.history.navigate(that.getOption('next'), {trigger:true});
+                }
+            })
           }
         },
 
@@ -109,7 +114,7 @@ define('LoginView', [
 
         onSignupClick: function(evt) {
             if (evt) evt.preventDefault();
-            new SignupView(_.extend(this.options, {el:'#content'})).render();
+            Backbone.history.navigate('signup/' + this.getOption('next'), {trigger:true});
         }
 
     });

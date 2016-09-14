@@ -17,6 +17,15 @@ define("App", [
 
     var App = new Marionette.Application();
 
+    App.requireLogin = function(func) {
+      sessionCh.request('checkAuth', {
+        success: func,
+        error: function() {
+          Backbone.history.navigate('login/' + Backbone.history.getFragment(), {trigger:true});
+        }
+      })
+    }
+
     // Just use GET and POST to support all browsers
     Backbone.emulateHTTP = true;
 

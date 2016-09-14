@@ -109,7 +109,11 @@ define('SignupView', [
           },
           'change:key': function(model, value){
             sessionCh.request('setToken', value)
-            sessionCh.request('checkAuth', this.options)
+            sessionCh.request('checkAuth', {
+                success: function() {
+                   Backbone.history.navigate(that.getOption('next'), {trigger:true});
+                }
+            })
           }
         },
 

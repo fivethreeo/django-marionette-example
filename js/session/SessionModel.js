@@ -137,15 +137,18 @@ define("session/SessionModel", [
                     if(!response.error){
                         self.updateSessionUser(response);
                         self.set({ logged_in : true });
+                        if (context.success) context.success(self, response);
                         sessionCh.trigger('checkAuth:success', self, response, context);
                     } else {
                         self.updateSessionUser({});
                         self.set({ logged_in : false });
+                        if (context.error) context.error(self, response);
                         sessionCh.trigger('checkAuth:error', self, response, context);
                     }
                 }, error:function(mod, response){
                     self.updateSessionUser({});
                     self.set({ logged_in : false });
+                    if (context.error) context.error(self, response);
                     sessionCh.trigger('checkAuth:error', self, response, context);  
                 }
             }).always( function(response){
