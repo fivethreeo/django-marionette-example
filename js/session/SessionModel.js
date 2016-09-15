@@ -27,6 +27,7 @@ define("session/SessionModel", [
           this.logoutSingleton.save(null, {
             success: function(model, response) {
                 self.set({ logged_in : false });
+                self.unset('token');
                 self.updateSessionUser({})
                 sessionCh.trigger('logout:success', self, response, context);
             },
@@ -41,6 +42,7 @@ define("session/SessionModel", [
           this.removeSingleton.destroy({
             success: function(model, response) {
                 self.set({ logged_in : false });
+                self.unset('token');
                 self.updateSessionUser({})
                 sessionCh.trigger('removeAccount:success', self, response, context);
                 sessionCh.trigger('logout:success', self, response, context);
