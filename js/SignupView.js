@@ -108,10 +108,11 @@ define('SignupView', [
             this.model.triggerValidated(xhr.responseJSON, xhr.responseJSON);
           },
           'change:key': function(model, value){
+            var that = this;
             sessionCh.request('setToken', value)
             sessionCh.request('checkAuth', {
                 success: function() {
-                   Backbone.history.navigate(that.getOption('next'), {trigger:true});
+                   Backbone.history.navigate(that.getNext(), {trigger:true});
                 }
             })
           }
@@ -124,7 +125,11 @@ define('SignupView', [
         onSignupAttempt: function(evt) {
             if (evt) evt.preventDefault();
             this.model.save()
-        }
+        },
 
+        getNext: function() {
+            var next = this.getOption('next');
+            return next === null ? '':next;
+        }
     });
 });

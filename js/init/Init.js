@@ -53,7 +53,10 @@ require([
       new SessionModel({}); // Singleton session model
       new HeaderRouter();
       new MainRouter();
-      Backbone.history.start({root:'/'}); // Start history when our application is ready
+      // HTML5 pushState for URLs without hashbangs
+      var hasPushstate = !!(window.history && history.pushState);
+      if(hasPushstate) Backbone.history.start({ pushState: true, root: '/' });
+      else Backbone.history.start({root:'/'}); // Start history when our application is ready
     });
 
     $(document).ready(function() {

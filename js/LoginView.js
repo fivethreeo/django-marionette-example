@@ -82,7 +82,7 @@ define('LoginView', [
             sessionCh.request('setToken', value)
             sessionCh.request('checkAuth', {
                 success: function() {
-                   Backbone.history.navigate(that.getOption('next'), {trigger:true});
+                   Backbone.history.navigate(that.getNext(), {trigger:true});
                 }
             })
           }
@@ -114,7 +114,12 @@ define('LoginView', [
 
         onSignupClick: function(evt) {
             if (evt) evt.preventDefault();
-            Backbone.history.navigate('signup/' + this.getOption('next'), {trigger:true});
+            Backbone.history.navigate('signup/' + this.getNext(), {trigger:true});
+        },
+
+        getNext: function() {
+            var next = this.getOption('next');
+            return next === null ? '':next;
         }
 
     });
