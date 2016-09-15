@@ -18,7 +18,9 @@ require([
 
     var Controller = Marionette.Object.extend({
       initialize: function(options){
-        this.listenTo(sessionCh, 'logout:success', this.index);
+        this.listenTo(sessionCh, 'logout:success', function() {
+          Backbone.history.navigate('/', {trigger:true});
+        });
       },
       
       signup: function(next) {

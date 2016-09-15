@@ -1,72 +1,71 @@
-from tastypie import fields, utils
-from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
-from sopin.menus.models import Restaurant, Dish, DishType, RestaurantDishType, Kitchen, Indgredient
+"""
+(class\s)(.*)(ViewSet\(ModelViewSet\):)
+class \2Serializer(ModelSerializer):\n    class Meta:\n        model = \2\n        fields = '__all__'\n\n\1\2\3\n    serializer = \2Serializer
+"""
+from menus.models import Restaurant, Dish, DishType, RestaurantDishType, Kitchen, Indgredient
+from rest_framework.viewsets import ModelViewSet
 
-class RestaurantResource(ModelResource):
+class RestaurantSerializer(ModelSerializer):
     class Meta:
-        resource_name = 'restaurants'
-        queryset = Restaurant.objects.all()
+        model = Restaurant
+        fields = '__all__'
 
-class DishResource(ModelResource):
+class RestaurantViewSet(ModelViewSet):
+    serializer = RestaurantSerializer
+    queryset = Restaurant.objects.all()
+
+class DishSerializer(ModelSerializer):
     class Meta:
-        resource_name = 'dishes'
-        queryset = Dish.objects.all()
+        model = Dish
+        fields = '__all__'
 
-class DishTypeResource(ModelResource):
+class DishViewSet(ModelViewSet):
+    serializer = DishSerializer
+    queryset = Dish.objects.all()
+
+class DishTypeSerializer(ModelSerializer):
     class Meta:
-        resource_name = 'sopin_dishtypes'
-        queryset = DishType.objects.all()
+        model = DishType
+        fields = '__all__'
 
-        filtering = {
-            'name': ALL_WITH_RELATIONS
-        }
+class DishTypeViewSet(ModelViewSet):
+    serializer = DishTypeSerializer
+    queryset = DishType.objects.all()
 
-class RestaurantDishTypeResource(ModelResource):
+class RestaurantDishTypeSerializer(ModelSerializer):
     class Meta:
-        resource_name = 'dishtypes'
-        queryset = RestaurantDishType.objects.all()
+        model = RestaurantDishType
+        fields = '__all__'
 
-        filtering = {
-            'name': ALL_WITH_RELATIONS
-        }
+class RestaurantDishTypeViewSet(ModelViewSet):
+    serializer = RestaurantDishTypeSerializer
+    queryset = RestaurantDishType.objects.all()
 
-class KitchenResource(ModelResource):
+class KitchenSerializer(ModelSerializer):
     class Meta:
-        resource_name = 'kitchens'
-        queryset = Kitchen.objects.all()
+        model = Kitchen
+        fields = '__all__'
 
-        filtering = {
-            'name': ALL_WITH_RELATIONS
-        }
+class KitchenViewSet(ModelViewSet):
+    serializer = KitchenSerializer
+    queryset = Kitchen.objects.all()
 
-class IndgredientResource(ModelResource):
+class IndgredientSerializer(ModelSerializer):
     class Meta:
-        resource_name = 'indgredients'
-        queryset = Indgredient.objects.filter(approved=True)
+        model = Indgredient
+        fields = '__all__'
 
-        filtering = {
-            'name': ALL_WITH_RELATIONS
-        }
+class IndgredientViewSet(ModelViewSet):
+    serializer = IndgredientSerializer
+    queryset = Indgredient.objects.filter(approved=True)
 
-class DishFlattenedResource(ModelResource):
-    restaurant = fields.ForeignKey(RestaurantResource, 'restaurant')
-    kitchen = fields.ForeignKey(KitchenResource, 'kitchen')
-    dishtype = fields.ForeignKey(RestaurantDishTypeResource, 'dishtype')
-    sopin_dishtype = fields.ForeignKey(DishTypeResource, 'sopin_dishtype')
-
+class DishFlattenedSerializer(ModelSerializer):
     class Meta:
-        resource_name = 'dishes_flat'
-        queryset = Dish.objects.select_related('restaurant', 'dishtype', 'sopin_dishtype', 'kitchen')
-        filtering = {
-            'kitchen': ALL_WITH_RELATIONS,
-            'dishtype': ALL_WITH_RELATIONS,
-            'sopin_dishtype': ALL_WITH_RELATIONS
-        }
+        model = DishFlattened
+        fields = '__all__'
 
-    def dehydrate(self, bundle):
-        bundle.data['sopin_dishtype_flat'] = bundle.obj.sopin_dishtype.name
-        bundle.data['kitchen_flat'] = bundle.obj.kitchen.name
-        bundle.data['indgredients'] = bundle.obj.indgredients
-        return bundle
-
+class DishFlattenedViewSet(ModelViewSet):
+    serializer = DishFlattenedSerializer
+    queryset = Dish.objects.select_related('restaurant', 'dishtype', 'sopin_dishtype', 'kitchen')
+        
 
